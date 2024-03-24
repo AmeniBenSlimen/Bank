@@ -36,9 +36,9 @@ public class Role {
     public void setName(ERole name) {
         this.name = name;
     }
-/*@Column(name = "cod_role")
+    @Column(name = "cod_role")
     private String codrole;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Privilege> privileges;*/
+    private List<Privilege> privileges;
 }

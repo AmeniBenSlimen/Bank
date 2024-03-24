@@ -11,9 +11,7 @@ import com.pfe.Bank.repository.RoleRepository;
 import com.pfe.Bank.repository.UserRepository;
 import com.pfe.Bank.security.jwt.JwtUtils;
 import com.pfe.Bank.security.services.UserDetailsImpl;
-import com.pfe.Bank.token.Token;
-import com.pfe.Bank.token.TokenRepository;
-import com.pfe.Bank.token.TokenType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,8 +46,7 @@ public class AuthenticationRest {
 
     @Autowired
     PasswordEncoder encoder;
-    @Autowired
-    TokenRepository tokenRepository;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request){
 
@@ -116,56 +113,12 @@ public class AuthenticationRest {
         }
         user.setStatus(false);
         user.setRoles(roles); // accorder la liste des Roles
-        var savedUser = userRepository.save(user); // enregistrer dans la base
+        userRepository.save(user); // enregistrer dans la base
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(),
-                        request.getPassword())
-        );
+        return  ResponseEntity.ok(new MessageResponse("User Registred successfully !!!!"));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication); // traiter l'user selon ses droits d'accées
 
-        String jwt = jwtUtils.generateJwtToken(authentication); // génération du token
-
-        UserDetailsImpl userdetails = (UserDetailsImpl) authentication.getPrincipal(); // get l'utilisateur principal
-
-        // récupérer la list des roles
-        List<String> roless = userdetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-        var jwtToken = jwtUtils.generateJwtToken(authentication);
-        revokeAllUserTokens(user);
-        saveUserToken(savedUser, jwtToken);
-        //false = token valid && true = token invalid
-        return ResponseEntity.ok(
-                new JwtResponse(
-                        jwt,
-                        userdetails.getId(),
-                        userdetails.getUsername(),
-                        userdetails.getEmail(),
-                        roless));
     }
-    private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokensByUser(user.getId());
-        if (validUserTokens.isEmpty())
-            return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
-    }
-    private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEREAR)
-                .revoked(false)
-                .expired(false)
-                .build();
-        tokenRepository.save(token);
-    }
-
 
     @PostMapping("/signin")
     public ResponseEntity<?> auth_user(@Valid @RequestBody LoginRequest loginRequest){
@@ -188,9 +141,7 @@ public class AuthenticationRest {
         List<String> roles = userdetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-        var user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow();
-        revokeAllUserTokens(user);
-        saveUserToken(user,jwt);
+
         return ResponseEntity.ok(
                 new JwtResponse(
                         jwt,
@@ -199,6 +150,5 @@ public class AuthenticationRest {
                         userdetails.getEmail(),
                         roles));
     }
-
 }
 

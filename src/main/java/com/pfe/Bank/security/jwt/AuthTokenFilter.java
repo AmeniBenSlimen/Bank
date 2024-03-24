@@ -1,8 +1,6 @@
 package com.pfe.Bank.security.jwt;
 
 import com.pfe.Bank.security.services.UserDetailsServiceImpl;
-import com.pfe.Bank.token.TokenRepository;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -32,18 +29,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
-    @Autowired
-    TokenRepository tokenRepository;
-
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().contains("/api/v1/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         try {
             String jwt = parsejwt(request);
@@ -51,22 +39,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                var isTokenValid = tokenRepository.findByToken(jwt)
-                        .map(t -> !t.isExpired() && !t.isRevoked())
-                        .orElse(false);
-                if (jwtUtils.validateJwtToken(jwt, userDetails) && isTokenValid) {
-                    UsernamePasswordAuthenticationToken authentication = new
-                            UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new
+                        UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null, userDetails.getAuthorities());
 
-                    authentication.setDetails(new WebAuthenticationDetailsSource()
-                            .buildDetails(request));
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                authentication.setDetails(new WebAuthenticationDetailsSource()
+                        .buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }catch(Exception e){
             logger.error("Cannot set user authentication: {}",e);
