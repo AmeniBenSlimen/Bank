@@ -24,4 +24,5 @@ public class Modul {
 
     @OneToMany(mappedBy = "module")
     List<Menu> menus;
+
 }

@@ -2,7 +2,6 @@ package com.pfe.Bank.service;
 
 import com.pfe.Bank.form.ModulForm;
 import com.pfe.Bank.model.Modul;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

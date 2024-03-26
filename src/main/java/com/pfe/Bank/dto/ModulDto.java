@@ -1,6 +1,7 @@
 package com.pfe.Bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pfe.Bank.form.ModulForm;
 import com.pfe.Bank.model.Modul;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ModulDto {
+public class ModulDto extends ModulForm {
 
     @JsonProperty("cdModul")
     private String cdModul;
