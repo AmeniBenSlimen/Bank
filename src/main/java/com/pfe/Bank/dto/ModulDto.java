@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ModulDto extends ModulForm {
+public class ModulDto {
 
     @JsonProperty("cdModul")
     private String cdModul;

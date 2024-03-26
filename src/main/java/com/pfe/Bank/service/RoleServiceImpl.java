@@ -1,5 +1,8 @@
 package com.pfe.Bank.service;
 
+import com.pfe.Bank.exception.MissingEntity;
+import com.pfe.Bank.form.RoleForm;
+import com.pfe.Bank.model.Modul;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -20,7 +25,31 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> getAllNtRole() {
         return roleRepository.findAll();
+    }
 
+    @Override
+    public Role addRole(RoleForm form) throws MissingEntity {
+        Role role = new Role();
+        role.setCodrole(form.getCdRole());
+        role.setName(form.getLbRole());
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public Role updateRole(Long id, RoleForm form) throws MissingEntity {
+        Role role = getRoleById(id);
+        role.setCodrole(form.getCdRole());
+        role.setName(form.getLbRole());
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public Map<String, Boolean> deleteRole(Long id) throws MissingEntity{
+        Role role = getRoleById(id);
+        roleRepository.delete(role);
+        Map<String,Boolean> map = new HashMap<>();
+        map.put("deleted",Boolean.TRUE);
+        return map;
     }
 
     @Override
@@ -29,15 +58,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getRoleById(long id) {
+    public Role getRoleById(long id) throws MissingEntity{
         Optional<Role> optional = roleRepository.findById(id);
-        Role ntRole = null;
-        if (optional.isPresent()) {
-            ntRole = optional.get();
-        } else {
-            throw new RuntimeException(" role ntf not found for id :: " + id);
+        if(!optional.isPresent()){
+            throw new MissingEntity("Role not found with code Menu : "+id);
         }
-        return ntRole;
+        return optional.get();
     }
 
     @Override
