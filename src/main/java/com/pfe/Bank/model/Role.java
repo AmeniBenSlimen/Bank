@@ -1,8 +1,10 @@
 package com.pfe.Bank.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -38,7 +40,7 @@ public class Role {
     }
     @Column(name = "cod_role")
     private String codrole;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Privilege> privileges;
 }

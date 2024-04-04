@@ -23,7 +23,7 @@ public class ModulController {
         return ModulDto.of(modul);
     }
 
-    @GetMapping("/allModules")
+    @GetMapping("/getAllModul")
     List<ModulDto> getAllModules(){
         List<Modul> modul = modulService.getModules();
         return ModulDto.of(modul);

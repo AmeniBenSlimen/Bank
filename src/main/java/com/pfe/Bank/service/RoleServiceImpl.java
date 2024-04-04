@@ -2,7 +2,7 @@ package com.pfe.Bank.service;
 
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.form.RoleForm;
-import com.pfe.Bank.model.Modul;
+import com.pfe.Bank.model.ERole;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,15 @@ public class RoleServiceImpl implements RoleService {
         Optional<Role> optional = roleRepository.findById(id);
         if(!optional.isPresent()){
             throw new MissingEntity("Role not found with code Menu : "+id);
+        }
+        return optional.get();
+    }
+
+    @Override
+    public Role findByName(ERole name) throws MissingEntity {
+        Optional<Role> optional = roleRepository.findByName(name);
+        if(!optional.isPresent()){
+            throw new MissingEntity("RoleName not found with Name : "+name);
         }
         return optional.get();
     }

@@ -23,7 +23,7 @@ public class MenuController {
         Menu menu =menuService.addMenu(form);
         return MenuDto.of(menu);
     }
-    @GetMapping("/allMenus")
+    @GetMapping("/admin/dashboard")
     List<MenuDto> getAllMenus(){
         List<Menu> menu = menuService.getAllMenus();
         return MenuDto.of(menu);

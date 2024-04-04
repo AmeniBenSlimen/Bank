@@ -1,8 +1,9 @@
 package com.pfe.Bank.service;
 
+import com.pfe.Bank.exception.DuplicateEntity;
+import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.form.PrivilegeForm;
-import com.pfe.Bank.model.Modul;
-import com.pfe.Bank.model.Role;
+import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.MenuRepository;
 import com.pfe.Bank.repository.ModuleRepository;
 import com.pfe.Bank.repository.PrivilegeRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PrivilegeServiceImpl implements PrivilegeService{
@@ -28,15 +30,42 @@ public class PrivilegeServiceImpl implements PrivilegeService{
 
     @Autowired
     PrivilegeRepository privilegeRepository;
+
+    @Override
+    public Role findByName(ERole name) throws MissingEntity {
+        Optional<Role> optional = roleRepository.findByName(name);
+        if(!optional.isPresent()){
+            throw new MissingEntity("RoleName not found with Name : "+name);
+        }
+        return optional.get();
+    }
+
+    @Override
+    public Menu findByCodmenu(String codMenu) throws MissingEntity {
+        Optional<Menu> menue = menuRepository.findByCodmenu(codMenu);
+        if(!menue.isPresent()){
+            throw new MissingEntity("Menue not found with code Menu : "+codMenu);
+        }
+        return menue.get();
+    }
+    @Override
+    public Privilege addPrivilege(PrivilegeForm form) throws MissingEntity {
+        Role role =findByName(ERole.valueOf(form.getCdRole()));
+        Menu menu =findByCodmenu(form.getCdMenu());
+        Privilege privilege = new Privilege();
+        privilege.setRole(role);
+        privilege.setMenu(menu);
+        return privilegeRepository.save(privilege);
+    }
     //cette methode permet de réqupérer tous les roles et et tous les modules w tkhabyhom f west privilege =form
     //yaany bch traj3elna form fyh les roles et les modules
     @Override
-    public PrivilegeForm displayForm() {
+    public PrivilegeForm displayForm() throws DuplicateEntity {
         List<Role> roles = ntRoleRepository.findAll();
-        List<Modul> modules = moduleRepository.findAll();
+        //List<Module> modules = moduleRepository.findAll();
         PrivilegeForm form = new PrivilegeForm();
         form.setRoles(roles);
-        form.setModules(modules);
+        //form.setModules(modules);
         return form;
     }
    /* @Override

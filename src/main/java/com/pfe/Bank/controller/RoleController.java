@@ -1,13 +1,9 @@
 package com.pfe.Bank.controller;
 
-import com.pfe.Bank.dto.MenuDto;
-import com.pfe.Bank.dto.ModulDto;
 import com.pfe.Bank.dto.RoleDto;
 import com.pfe.Bank.exception.MissingEntity;
-import com.pfe.Bank.form.ModulForm;
 import com.pfe.Bank.form.RoleForm;
-import com.pfe.Bank.model.Menu;
-import com.pfe.Bank.model.Modul;
+import com.pfe.Bank.model.ERole;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +41,10 @@ public class RoleController {
     @DeleteMapping("/deleteRole/{id}")
     public Map<String,Boolean> deleteRole(@PathVariable Long id) throws MissingEntity{
         return roleService.deleteRole(id);
+    }
+    @GetMapping("/getByNameRole/{name}")
+    public RoleDto getRoleName(@PathVariable String name) throws MissingEntity{
+        Role role = roleService.findByName(ERole.valueOf(name));
+        return RoleDto.of(role);
     }
 }

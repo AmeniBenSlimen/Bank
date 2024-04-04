@@ -1,9 +1,8 @@
 package com.pfe.Bank.service;
 
 import com.pfe.Bank.exception.MissingEntity;
-import com.pfe.Bank.form.MenuForm;
 import com.pfe.Bank.form.RoleForm;
-import com.pfe.Bank.model.Menu;
+import com.pfe.Bank.model.ERole;
 import com.pfe.Bank.model.Role;
 import org.springframework.data.domain.Page;
 
@@ -22,4 +21,6 @@ public interface RoleService {
     void saveNtRole(Role ntRole);
 
     Role getRoleById(long id) throws MissingEntity;
+    public Role findByName(ERole name) throws MissingEntity;
+
 }
