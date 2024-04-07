@@ -16,7 +16,7 @@ public class Privilege {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @JsonBackReference
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "cod_role",referencedColumnName = "id")
     private Role role;

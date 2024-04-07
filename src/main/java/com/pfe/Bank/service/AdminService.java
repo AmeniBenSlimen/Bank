@@ -16,5 +16,6 @@ public interface AdminService {
 
     public List<User> searchByUsername(String name);
     UserDto getUserWithRoles(Long userId);
+    void removeRoleFromUser(Long userId, Long roleId);
 
 }

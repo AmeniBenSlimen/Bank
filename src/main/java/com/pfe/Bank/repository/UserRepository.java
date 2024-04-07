@@ -23,6 +23,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByUsernameAndStatus(String username, Boolean status);
 
     public List<User> searchByUsernameLike(String name);
+   // List<User> findById(Long userId);
 
 
 

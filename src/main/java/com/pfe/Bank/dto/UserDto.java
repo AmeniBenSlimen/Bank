@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class UserDto extends UserForm {
-    //private Set<RoleDto> userRoles;
+    private Set<RoleDto> userRoles;
 
     public UserDto(User user) {
         super(user);
-        //this.userRoles = user.getRoles().stream().map(RoleDto::new).collect(Collectors.toSet());
+        this.userRoles = user.getRoles().stream().map(RoleDto::new).collect(Collectors.toSet());
     }
 
     public static UserDto of(User user){

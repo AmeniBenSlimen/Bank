@@ -40,10 +40,15 @@ public class AdminController {
     @GetMapping("/userRole/{userId}")
     public ResponseEntity<UserDto> getUserWithRoles(@PathVariable Long userId) {
         UserDto userDto = adminService.getUserWithRoles(userId);
-        if (userDto != null) {
-            return new ResponseEntity<>(userDto, HttpStatus.OK);
+        if (userDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+    @DeleteMapping("/user/{userId}/roles/{roleId}")
+    public ResponseEntity<?> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) {
+        adminService.removeRoleFromUser(userId, roleId);
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/search")
     public List<User> searchByUsername(@RequestParam(name = "name") String name){
