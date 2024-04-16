@@ -13,7 +13,19 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class PrivilegeDto {
-    private ERole cdRole ;
+
+    private long id;
+    private String role;
+    private String menu;
+
+    public PrivilegeDto(Privilege privilege){
+        this.id = privilege.getId();
+        this.role = privilege.getRole().getName().toString();
+        this.menu = privilege.getMenu().getLibmenu();
+    }
+
+
+    /*private ERole cdRole ;
     private RoleDto role ;
     private String cdMenu ;
     private MenuDto menu;
@@ -30,7 +42,7 @@ public class PrivilegeDto {
     public static List<PrivilegeDto> of(List<Privilege> privileges){
         return privileges.stream().map(PrivilegeDto::of).collect(Collectors.toList());
     }
-
+*/
 
 
 }

@@ -2,6 +2,7 @@ package com.pfe.Bank.controller;
 
 import com.pfe.Bank.dto.UserDto;
 import com.pfe.Bank.exception.MissingEntity;
+import com.pfe.Bank.form.UserForm;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.model.User;
 import com.pfe.Bank.service.AdminService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +39,7 @@ public class AdminController {
     public void assignRolesToUser(@PathVariable long userId, @RequestBody Set<Role> roles) {
         adminService.assignRolesToUser(userId, roles);
     }
+
     @GetMapping("/userRole/{userId}")
     public ResponseEntity<UserDto> getUserWithRoles(@PathVariable Long userId) {
         UserDto userDto = adminService.getUserWithRoles(userId);
@@ -54,5 +57,15 @@ public class AdminController {
     public List<User> searchByUsername(@RequestParam(name = "name") String name){
         List<User> users = adminService.searchByUsername(name);
         return users;
+    }
+    @PutMapping("/updateUser/{userId}")
+    public UserDto updateUser(@PathVariable Long userId, @Valid @RequestBody UserForm form) throws MissingEntity{
+        User user = adminService.updateUser(userId,form);
+        return UserDto.of(user);
+
+    }
+    @DeleteMapping("/deleteUser/{userId}")
+    public Map<String,Boolean> deleteUser(@PathVariable Long userId) throws MissingEntity {
+        return adminService.deleteUser(userId);
     }
 }

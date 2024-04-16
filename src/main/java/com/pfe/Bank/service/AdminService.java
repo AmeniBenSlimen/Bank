@@ -2,6 +2,7 @@ package com.pfe.Bank.service;
 
 import com.pfe.Bank.dto.UserDto;
 import com.pfe.Bank.exception.MissingEntity;
+import com.pfe.Bank.form.UserForm;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.model.User;
 
@@ -17,5 +18,8 @@ public interface AdminService {
     public List<User> searchByUsername(String name);
     UserDto getUserWithRoles(Long userId);
     void removeRoleFromUser(Long userId, Long roleId);
+    public User updateUser(Long userId, UserForm form) throws MissingEntity;
+    public Map<String,Boolean> deleteUser(Long userId) throws MissingEntity;
+
 
 }

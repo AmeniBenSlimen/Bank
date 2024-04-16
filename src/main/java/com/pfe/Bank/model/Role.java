@@ -40,7 +40,7 @@ public class Role {
     }
     @Column(name = "cod_role")
     private String codrole;
-    @JsonManagedReference
+
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Privilege> privileges;
 }

@@ -17,6 +17,82 @@ import java.util.Optional;
 @Service
 public class PrivilegeServiceImpl implements PrivilegeService{
     @Autowired
+    MenuRepository menuRepository;
+
+    @Autowired
+    ModuleRepository moduleRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    PrivilegeRepository privilegeRepository;
+
+
+
+    @Override
+    public Privilege addPrivilege(long roleId, String menuId) {
+        Role role=roleRepository.findById(roleId).orElse(null);
+        Menu menu=menuRepository.findById(menuId).orElse(null) ;
+        Privilege privilege=new Privilege();
+        privilege.setRole(role);
+        privilege.setMenu(menu);
+        return privilegeRepository.save(privilege);
+    }
+
+
+    @Override
+    public void deletePrivilege(long id) {
+        privilegeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Privilege> getAllPrivileges() {
+        List<Privilege> privileges = privilegeRepository.findAll();
+        return privileges;
+    }
+
+    @Override
+    public Privilege getPrivilegeById(long id) {
+
+        return privilegeRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Privilege updatePrivilege(long id, Long roleId, String menuId) {
+        // Récupérer le privilège à mettre à jour par son ID
+        Optional<Privilege> privilegeOptional = privilegeRepository.findById(id);
+
+        // Vérifier si le privilège existe dans la base de données
+        if (privilegeOptional.isPresent()) {
+            // Récupérer le privilège de l'Optional
+            Privilege privilege = privilegeOptional.get();
+
+            // Mettre à jour les champs du privilège avec les nouvelles valeurs
+            Role role = roleRepository.findById(roleId).orElse(null);
+            Menu menu = menuRepository.findById(menuId).orElse(null);
+
+            // Vérifier si le rôle et le menu existent
+            if (role != null && menu != null) {
+                // Mettre à jour les champs du privilège
+                privilege.setRole(role);
+                privilege.setMenu(menu);
+
+                // Enregistrer les modifications dans la base de données
+                return privilegeRepository.save(privilege);
+            } else {
+                // Gérer le cas où le rôle ou le menu n'est pas trouvé
+                // Vous pouvez jeter une exception ou retourner null selon votre logique métier
+                return null;
+            }
+        } else {
+            // Gérer le cas où le privilège n'est pas trouvé
+            // Vous pouvez jeter une exception ou retourner null selon votre logique métier
+            return null;
+        }
+    }
+
+   /* @Autowired
     RoleRepository ntRoleRepository;
 
     @Autowired
@@ -89,7 +165,7 @@ public class PrivilegeServiceImpl implements PrivilegeService{
         return privilegeForm;
     }
 
-    /*
+
     @Override
     public void addPrivilege(long roleId, String menuId) {
 

@@ -17,7 +17,7 @@ public class UserForm {
     @NotBlank
     @Size(max=20)
     private String username;
-    @NotBlank // ce champs ne doit pas etre vide
+    @NotBlank
     private String fullname;
     @NotBlank
     private String phone;
@@ -30,7 +30,8 @@ public class UserForm {
     private String password;
     private Boolean status;
     //private Set<Role> roles;
-
+    public UserForm() {
+    }
     public UserForm(User user) {
         this.username = user.getUsername();
         this.fullname = user.getFullname();

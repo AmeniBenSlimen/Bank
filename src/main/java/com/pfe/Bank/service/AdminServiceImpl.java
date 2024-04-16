@@ -2,12 +2,21 @@ package com.pfe.Bank.service;
 
 import com.pfe.Bank.dto.UserDto;
 import com.pfe.Bank.exception.MissingEntity;
+import com.pfe.Bank.form.UserForm;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.model.User;
 import com.pfe.Bank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Service
@@ -62,10 +71,42 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
+    @Override
+    public User updateUser(Long userId, UserForm form) throws MissingEntity {
+        User user = getUserById(userId);
+        user.setUsername(form.getUsername());
+        user.setFullname(form.getFullname());
+        user.setEmail(form.getEmail());
+        user.setPhone(form.getPhone());
+        user.setPassword(form.getPassword());
+        user.setStatus(form.getStatus());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Map<String, Boolean> deleteUser(Long userId) throws MissingEntity {
+        User user = getUserById(userId);
+        userRepository.delete(user);
+        Map<String,Boolean> map = new HashMap<>();
+        map.put("deleted",Boolean.TRUE);
+        return map;
+    }
 
 
     @Override
     public List<User> searchByUsername(String name){
         return userRepository.searchByUsernameLike("%"+name+"%");
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

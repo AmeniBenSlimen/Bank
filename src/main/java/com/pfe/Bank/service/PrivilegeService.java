@@ -6,13 +6,16 @@ import com.pfe.Bank.form.PrivilegeForm;
 import com.pfe.Bank.model.*;
 
 import java.nio.charset.MalformedInputException;
+import java.util.List;
 
 public interface PrivilegeService {
-    Role findByName(ERole name) throws MissingEntity;
-    public Menu findByCodmenu(String codMenu) throws MissingEntity;
+    Privilege addPrivilege(long roleId, String menuId) ;
 
-    public Privilege addPrivilege(PrivilegeForm form) throws MissingEntity;
-    PrivilegeForm displayForm() throws DuplicateEntity;
+    void deletePrivilege(long id);
+    //List<Privilege> getPrivilegeByRole(long roleId) ;
+    List<Privilege> getAllPrivileges() ;
+    Privilege getPrivilegeById(long id);
+    Privilege updatePrivilege(long id, Long roleId, String menuId);
 
     //PrivilegeForm displayMenuForm(PrivilegeForm privilegeForm);
 
