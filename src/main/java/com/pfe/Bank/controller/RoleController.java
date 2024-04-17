@@ -38,9 +38,9 @@ public class RoleController {
         Role role = roleService.updateRole(id,form);
         return RoleDto.of(role);
     }
-    @DeleteMapping("/deleteRole/{id}")
-    public Map<String,Boolean> deleteRole(@PathVariable Long id) throws MissingEntity{
-        return roleService.deleteRole(id);
+    @DeleteMapping("/deleteRole/{roleId}")
+    public Map<String,Boolean> deleteRole(@PathVariable Long roleId) throws MissingEntity{
+        return roleService.deleteRole(roleId);
     }
     @GetMapping("/getByNameRole/{name}")
     public RoleDto getRoleName(@PathVariable String name) throws MissingEntity{

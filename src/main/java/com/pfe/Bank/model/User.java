@@ -40,7 +40,7 @@ public class User {
 
 
 
-    @ManyToMany( fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
@@ -74,6 +74,8 @@ public class User {
         this.status = false;
         this.email = email;
         this.password = password;
+        this.roles=getRoles();
+
     }
 
 

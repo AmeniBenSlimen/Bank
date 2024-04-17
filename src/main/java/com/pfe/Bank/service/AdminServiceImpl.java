@@ -84,7 +84,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Map<String, Boolean> deleteUser(Long userId) throws MissingEntity {
+    public Map<String, Boolean> deleteUser(long userId) throws MissingEntity {
         User user = getUserById(userId);
         userRepository.delete(user);
         Map<String,Boolean> map = new HashMap<>();

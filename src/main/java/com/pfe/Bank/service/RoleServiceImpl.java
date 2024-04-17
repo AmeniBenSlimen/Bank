@@ -44,8 +44,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Map<String, Boolean> deleteRole(Long id) throws MissingEntity{
-        Role role = getRoleById(id);
+    public Map<String, Boolean> deleteRole(Long roleId) throws MissingEntity{
+        Role role = getRoleById(roleId);
         roleRepository.delete(role);
         Map<String,Boolean> map = new HashMap<>();
         map.put("deleted",Boolean.TRUE);

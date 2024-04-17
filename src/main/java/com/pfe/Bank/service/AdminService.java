@@ -19,7 +19,7 @@ public interface AdminService {
     UserDto getUserWithRoles(Long userId);
     void removeRoleFromUser(Long userId, Long roleId);
     public User updateUser(Long userId, UserForm form) throws MissingEntity;
-    public Map<String,Boolean> deleteUser(Long userId) throws MissingEntity;
+    Map<String,Boolean> deleteUser(long userId) throws MissingEntity;
 
 
 }

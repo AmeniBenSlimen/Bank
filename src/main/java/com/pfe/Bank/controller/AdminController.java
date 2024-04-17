@@ -65,7 +65,7 @@ public class AdminController {
 
     }
     @DeleteMapping("/deleteUser/{userId}")
-    public Map<String,Boolean> deleteUser(@PathVariable Long userId) throws MissingEntity {
+    public Map<String,Boolean> deleteUser(@PathVariable Long userId) throws MissingEntity{
         return adminService.deleteUser(userId);
     }
 }

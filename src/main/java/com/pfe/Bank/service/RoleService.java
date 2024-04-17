@@ -14,7 +14,7 @@ public interface RoleService {
     public Role addRole(RoleForm form) throws MissingEntity;
     public Role updateRole(Long id, RoleForm form) throws MissingEntity;
 
-    public Map<String,Boolean> deleteRole(Long id) throws MissingEntity;
+    public Map<String,Boolean> deleteRole(Long roleId) throws MissingEntity;
 
     Page<Role> findPaginatedNtRole(int pageNoNtRole, int pageSize, String sortField, String sortDirection);
 

@@ -29,7 +29,6 @@ public class UserForm {
     @Size(max=120)
     private String password;
     private Boolean status;
-    //private Set<Role> roles;
     public UserForm() {
     }
     public UserForm(User user) {
@@ -40,6 +39,5 @@ public class UserForm {
         this.password = user.getPassword();
         this.id=user.getId();
         this.status=user.getStatus();
-        //this.roles = user.getRoles();
     }
 }
