@@ -16,6 +16,8 @@ public interface PrivilegeService {
     List<Privilege> getAllPrivileges() ;
     Privilege getPrivilegeById(long id);
     Privilege updatePrivilege(long id, Long roleId, String menuId);
+    List<Privilege> getPrivilegesByRole(long roleId);
+
 
     //PrivilegeForm displayMenuForm(PrivilegeForm privilegeForm);
 

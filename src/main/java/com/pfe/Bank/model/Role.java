@@ -16,31 +16,17 @@ import java.util.List;
 @Table(name="roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column (name="id")
     private long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "lib_role", length = 25)
+    @Column (name="lib_role",length = 25)
     private ERole name;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public ERole getName() {
-        return name;
-    }
-
-    public void setName(ERole name) {
-        this.name = name;
-    }
-    @Column(name = "cod_role")
+    @Column (name="cod_role")
     private String codrole;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Privilege> privileges;
 }

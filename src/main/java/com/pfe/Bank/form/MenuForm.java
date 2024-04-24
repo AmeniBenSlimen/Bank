@@ -13,7 +13,7 @@ import lombok.Setter;
 public class MenuForm {
     private String cdMenu ;
     private String lbMenu;
-    private String cdModul;
+    private String cdModule;
     public MenuForm(Menu menu){
         this.cdMenu=menu.getCodmenu();
         this.lbMenu=menu.getLibmenu();

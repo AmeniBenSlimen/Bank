@@ -4,11 +4,14 @@ import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.form.MenuForm;
 import com.pfe.Bank.model.Menu;
 import com.pfe.Bank.model.Modul;
+import com.pfe.Bank.model.Privilege;
 import com.pfe.Bank.repository.MenuRepository;
 import com.pfe.Bank.repository.ModuleRepository;
+import com.pfe.Bank.repository.PrivilegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,8 @@ public class MenuServiceImpl implements MenuService {
     MenuRepository menuRepository;
     @Autowired
     ModuleRepository moduleRepository;
+    @Autowired
+    private PrivilegeRepository privilegeRepository;
     @Override
     public Modul findByCodmodule(String codmodule) throws MissingEntity {
         Optional<Modul> module = moduleRepository.findByCodmodule(codmodule);
@@ -30,7 +35,7 @@ public class MenuServiceImpl implements MenuService {
     }
     @Override
     public Menu addMenu(MenuForm form) throws MissingEntity{
-        Modul modul =findByCodmodule(form.getCdModul());
+        Modul modul =findByCodmodule(form.getCdModule());
         Menu menu = new Menu();
         menu.setCodmenu(form.getCdMenu());
         menu.setLibmenu(form.getLbMenu());
@@ -59,8 +64,9 @@ public class MenuServiceImpl implements MenuService {
         menu.setLibmenu(form.getLbMenu());
         return menuRepository.save(menu);    }
 
-    @Override
+    @Transactional
     public Map<String, Boolean> deleteMenu(String codMenu) throws MissingEntity {
+        //List<Privilege> privileges = privilegeRepository.findByMenuId(id);
         Menu menu = findByCodmenu(codMenu);
         menuRepository.delete(menu);
         Map<String,Boolean> map = new HashMap<>();

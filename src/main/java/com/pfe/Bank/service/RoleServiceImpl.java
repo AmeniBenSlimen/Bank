@@ -45,6 +45,18 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Map<String, Boolean> deleteRole(Long roleId) throws MissingEntity{
+        /* facon 1 getAll Privileges and then delete
+        privilegeRepository.deleteAll(privilegeRepository.findAllByRoleId(roelId));*/
+
+        /* façon 2 on testesi le roel est utilisé
+        boolean isUsed  = privilegeRepository.existsById(roelId) ;
+        if(isUsed)
+        {
+            throw new IllegalArgumentException("you cant delete this rolz") ;
+        } else {
+            // delete roel
+        }*/
+
         Role role = getRoleById(roleId);
         roleRepository.delete(role);
         Map<String,Boolean> map = new HashMap<>();

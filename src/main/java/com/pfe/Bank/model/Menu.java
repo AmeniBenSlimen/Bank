@@ -20,7 +20,7 @@ public class Menu {
     @Column (name="lib_menu")
     private String libmenu;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "codmod",referencedColumnName = "cod_module")
     private Modul module;
 }

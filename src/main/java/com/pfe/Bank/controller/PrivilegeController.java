@@ -30,20 +30,11 @@ public class PrivilegeController {
         return ResponseEntity.ok(new PrivilegeDto(privilegeService.addPrivilege(roleId, menuId)));
     }
 
-    @DeleteMapping()
-    public void deletePrivilege(@RequestParam long id) {
+    @DeleteMapping("/deletePrivilege/{id}")
+    public void deletePrivilege(@PathVariable long id) {
         privilegeService.deletePrivilege(id);
 
     }
-    /*@GetMapping("/byRole/{roleId}")
-    public ResponseEntity<List<Privilege>> getPrivilegeByRole(@PathVariable long roleId) {
-        List<Privilege> privileges = privilegeService.getPrivilegeByRole(roleId);
-        if (privileges.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(privileges, HttpStatus.OK);
-    }*/
-
     @GetMapping("/all")
     public ResponseEntity<List<PrivilegeDto>> getAllPrivileges() {
         List<Privilege> privileges = privilegeService.getAllPrivileges();
@@ -74,23 +65,14 @@ public class PrivilegeController {
 
         return new ResponseEntity<>(new PrivilegeDto(updatedPrivilege), HttpStatus.OK);
     }
-
-
-    /*@GetMapping("/displayForm")
-    public PrivilegeForm displayForm() {
-        return privilegeService.displayForm();
+    @GetMapping("/privilegesByRole/{roleId}")
+    public ResponseEntity<List<PrivilegeDto>> getPrivilegesByRole(@PathVariable long roleId) {
+        List<Privilege> privileges = privilegeService.getPrivilegesByRole(roleId);
+        if (privileges.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<PrivilegeDto> privilegeDto = privileges.stream().map(PrivilegeDto::new).collect(Collectors.toList());
+        return new ResponseEntity<>(privilegeDto, HttpStatus.OK);
     }
-    @PostMapping("/addPrivilege")
-    public PrivilegeDto addPrivilege(@RequestBody PrivilegeForm form) throws MissingEntity {
-        Privilege privilege =privilegeService.addPrivilege(form);
-        return PrivilegeDto.of(privilege);
-    }
-    @GetMapping("/privilege/form")
-    public ResponseEntity<PrivilegeForm> displayForm() throws DuplicateEntity {
-        PrivilegeForm privilegeForm = privilegeService.displayForm();
-        return new ResponseEntity<>(privilegeForm, HttpStatus.OK);
-    }
-
-*/
 
 }

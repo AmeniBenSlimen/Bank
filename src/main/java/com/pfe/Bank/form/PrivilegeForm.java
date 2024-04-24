@@ -38,16 +38,8 @@ public class PrivilegeForm {
         this.roles = roles;
         this.modules = modules;
     }
-
-
-
-
-
     public void setMenus(List<Menu> menus) {
     }
-
-
-
 
     public void setModule(String moduleId) {
     }
@@ -57,13 +49,6 @@ public class PrivilegeForm {
         return null ;
 
     }
-    /*private Long id;
-    private String cdRole;
-    private String cdMenu;
-    private List<Role> roles;
-    private List<Module> modules;
-    public PrivilegeForm(Privilege privilege){
-        this.id=privilege.getId();
-    }*/
+
 }
 

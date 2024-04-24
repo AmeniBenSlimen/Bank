@@ -92,6 +92,11 @@ public class PrivilegeServiceImpl implements PrivilegeService{
         }
     }
 
+    @Override
+    public List<Privilege> getPrivilegesByRole(long roleId) {
+        return privilegeRepository.findByRoleId(roleId);
+    }
+
    /* @Autowired
     RoleRepository ntRoleRepository;
 

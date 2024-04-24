@@ -42,7 +42,6 @@ public class ModulController {
     public ModulDto updateModul(@PathVariable String codmodule, @RequestBody ModulForm form) {
         Modul modul = modulService.updateModule(codmodule,form);
         return ModulDto.of(modul);
-
     }
 }
 

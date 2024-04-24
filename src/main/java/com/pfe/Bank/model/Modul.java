@@ -22,7 +22,7 @@ public class Modul {
     @Column(name = "lib_module")
     private String libmodule;
 
-    @OneToMany(mappedBy = "module")
+    @OneToMany(mappedBy = "module", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Menu> menus;
 
 }

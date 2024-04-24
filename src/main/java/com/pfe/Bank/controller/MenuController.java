@@ -28,6 +28,11 @@ public class MenuController {
         List<Menu> menu = menuService.getAllMenus();
         return MenuDto.of(menu);
     }
+    @GetMapping("/getAllMenus")
+    List<MenuDto> getAllMenu(){
+        List<Menu> menu = menuService.getAllMenus();
+        return MenuDto.of(menu);
+    }
     @GetMapping("/getByCodMenu/{codMenu}")
     public MenuDto getMenu(@PathVariable String codMenu) throws MissingEntity{
         Menu menue = menuService.findByCodmenu(codMenu);
