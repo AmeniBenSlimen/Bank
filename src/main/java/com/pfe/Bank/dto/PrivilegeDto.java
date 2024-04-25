@@ -18,7 +18,7 @@ public class PrivilegeDto {
         this.id = privilege.getId();
         this.roleId = privilege.getRole().getName().toString();
         this.role = RoleDto.of(privilege.getRole());
-        this.menuId = privilege.getMenu().getLibmenu();
+        this.menuId = privilege.getMenu().getCodmenu();
         this.menu=MenuDto.of(privilege.getMenu());
     }
 

@@ -2,6 +2,7 @@ package com.pfe.Bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pfe.Bank.form.ModulForm;
+import com.pfe.Bank.model.Menu;
 import com.pfe.Bank.model.Modul;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,8 @@ public class ModulDto {
     @JsonProperty("lbModul")
     private String lbModul;
 
+    private List<Menu> menuDtos;
+
     public static ModulDto of(Modul modul){
         return new ModulDto(modul);
     }
@@ -26,6 +29,7 @@ public class ModulDto {
     public ModulDto(Modul modul) {
         this.cdModul = modul.getCodmodule();
         this.lbModul = modul.getLibmodule();
+        this.menuDtos = modul.getMenus();
     }
 
     public static List<ModulDto> of(List<Modul> modules){

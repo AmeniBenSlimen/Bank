@@ -1,5 +1,6 @@
 package com.pfe.Bank.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,5 +23,6 @@ public class Menu {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "codmod",referencedColumnName = "cod_module")
+    @JsonIgnore
     private Modul module;
 }
