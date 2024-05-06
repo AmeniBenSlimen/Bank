@@ -1,5 +1,6 @@
 package com.pfe.Bank.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pfe.Bank.form.ModulForm;
 import com.pfe.Bank.model.Menu;
@@ -20,6 +21,7 @@ public class ModulDto {
     @JsonProperty("lbModul")
     private String lbModul;
 
+    @JsonIgnore
     private List<Menu> menuDtos;
 
     public static ModulDto of(Modul modul){
