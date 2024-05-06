@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
+@Data
 public class ClientRetail extends Client {
     private String nationalite;
     private String situationFamiliale;
@@ -52,6 +52,7 @@ public class ClientRetail extends Client {
         super.setDateCreate(dateCreate);
         super.setDateUpdate(dateUpdate);
         super.setIsfull(isfull);
+        super.setRegion(region);
         super.setId(id);
     }
 }

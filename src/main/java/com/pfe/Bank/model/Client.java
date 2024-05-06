@@ -11,7 +11,6 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name="clients")
 public class Client {
@@ -43,4 +42,25 @@ public class Client {
     private  LocalDateTime dateUpdate;
     private boolean isfull;
 
+
+    public Client(long id, long codeRelation, String idNat, String codeRelationFlexcube, String identifiantProspect, String nom, String profession, String adresse, String agence, String ville, String region, Date dateNaissance, Date dateDebutRelation, String autre, LocalDateTime dateCreate, LocalDateTime dateUpdate, boolean isfull) {
+        super();
+        this.id = id;
+        this.codeRelation = codeRelation;
+        this.idNat = idNat;
+        this.codeRelationFlexcube = codeRelationFlexcube;
+        this.identifiantProspect = identifiantProspect;
+        this.nom = nom;
+        this.profession = profession;
+        this.adresse = adresse;
+        this.agence = agence;
+        this.ville = ville;
+        this.region = region;
+        this.dateNaissance = dateNaissance;
+        this.dateDebutRelation = dateDebutRelation;
+        this.autre = autre;
+        this.dateCreate = dateCreate;
+        this.dateUpdate = dateUpdate;
+        this.isfull = isfull;
+    }
 }

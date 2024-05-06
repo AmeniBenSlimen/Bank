@@ -14,7 +14,7 @@ public class ClientCsvRepresentation {
     private long code_relation;
     @CsvBindByName(column = "identifiant_national")
     private String idNat;
-    @CsvBindByName(column = "nomRelation")
+    @CsvBindByName(column = "nom_relation")
     private String nom_relation;
     @CsvBindByName(column = "adresse")
     private String adr;
