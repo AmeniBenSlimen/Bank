@@ -2,28 +2,39 @@ package com.pfe.Bank.load.response;
 
 import java.util.List;
 
-public class JwtResponse {
+public class JwtRespons {
     private String token;
     private String type = "Bearer ";
     private Long id;
     private String username;
     private String email;
-
+    private String phone;
+    private String fullname;
     private List<String> role;
 
-    public JwtResponse(String token, Long id, String username, String email, List<String> role) {
+    public JwtRespons(String token, Long id, String username, String email, String phone, String fullname, List<String> role) {
         this.token = token;
         this.id = id;
         this.username = username;
         this.email = email;
+        this.phone = phone;
+        this.fullname = fullname;
         this.role = role;
     }
-    public void JwtRespons(String token, Long id, String username, String email,List<String> role) {
-        this.token = token;
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role = role;
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getToken() {

@@ -2,6 +2,7 @@ package com.pfe.Bank.controller;
 
 import com.pfe.Bank.load.request.LoginRequest;
 import com.pfe.Bank.load.request.SignupRequest;
+import com.pfe.Bank.load.response.JwtRespons;
 import com.pfe.Bank.load.response.JwtResponse;
 import com.pfe.Bank.load.response.MessageResponse;
 import com.pfe.Bank.model.ERole;
@@ -13,6 +14,7 @@ import com.pfe.Bank.security.jwt.JwtUtils;
 import com.pfe.Bank.security.services.UserDetailsImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -148,6 +151,32 @@ public class AuthenticationRest {
                         userdetails.getId(),
                         userdetails.getUsername(),
                         userdetails.getEmail(),
+                        roles));
+    }
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        SecurityContextHolder.getContext().setAuthentication(authentication); // traiter l'user selon ses droits d'accées
+
+        String jwt = jwtUtils.generateJwtToken(authentication); // génération du token
+
+        UserDetailsImpl userdetails = (UserDetailsImpl) authentication.getPrincipal(); // get l'utilisateur principal
+
+        // récupérer la list des roles
+        List<String> roles = userdetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+                new JwtRespons(
+                        jwt,
+                        userdetails.getId(),
+                        userdetails.getUsername(),
+                        userdetails.getEmail(),
+                        userdetails.getPhone(),
+                        userdetails.getFullname(),
                         roles));
     }
 }

@@ -3,10 +3,10 @@ package com.pfe.Bank.service;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.Client;
 import com.pfe.Bank.model.ClientRetail;
-import com.pfe.Bank.repository.ClienRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.pfe.Bank.repository.ClientRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 
 public class ClientService {
     @Autowired
-    ClienRepository clientRepository;
+    ClientRepository clientRepository;
+
+
     @Transactional
     public Set<Client> uploadClients(MultipartFile file) throws IOException {
         Set<ClientRetail> clients = parseCsv(file);
@@ -72,7 +69,6 @@ public class ClientService {
 
 
 
-
     private static final Logger log = (Logger) LoggerFactory.getLogger(ClientService.class);
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     public Set<ClientRetail> parseCsv(MultipartFile file) throws IOException {
@@ -103,7 +99,7 @@ public class ClientService {
                             .nationalite(csvLine.getNationalite())
                             .dateNaissance(simpleDateFormat.parse(csvLine.getDateNais()))
                             .profession(csvLine.getProf())
-                            .dateEmbauche(dateEmbauche) // Utilisation de la date d'embauche parsée
+                            .dateEmbauche(dateEmbauche)
                             .situationFamiliale(csvLine.getSituationFamiliale())
                             .salaireDomicile(csvLine.getSalaireDomicile())
                             .dateDebutRelation(simpleDateFormat.parse(csvLine.getDate_debut_relation()))
@@ -122,5 +118,55 @@ public class ClientService {
                 }
             }).collect(Collectors.toSet());
         }
+    }
+    public List<Client> getClients(){
+        return clientRepository.findAll();
+    }
+    public Client getClientById(long id) throws MissingEntity {
+        Optional<Client> optional = clientRepository.findById(id);
+        if (!optional.isPresent()) {
+            throw new MissingEntity("client not found with id: " + id);
+        }
+        return optional.get();
+    }
+    public Client updateClient(long id, ClientRetail clientDetails) throws MissingEntity {
+        Optional<Client> existingClientOptional = clientRepository.findById(id);
+        if (!existingClientOptional.isPresent()) {
+            throw new MissingEntity("Client not found with id: " + id);
+        }
+
+        Client existingClient = existingClientOptional.get();
+
+        if (existingClient instanceof ClientRetail) {
+            ClientRetail existingClientRetail = (ClientRetail) existingClient;
+
+            existingClientRetail.setDateEmbauche(clientDetails.getDateEmbauche());
+            existingClientRetail.setAdresse(clientDetails.getAdresse());
+            existingClientRetail.setAgence(clientDetails.getAgence());
+            existingClientRetail.setAutre(clientDetails.getAutre());
+            existingClientRetail.setNom(clientDetails.getNom());
+            existingClientRetail.setCodeRelation(clientDetails.getCodeRelation());
+            existingClientRetail.setCodeRelationFlexcube(clientDetails.getCodeRelationFlexcube());
+            existingClientRetail.setDateDebutRelation(clientDetails.getDateDebutRelation());
+            existingClientRetail.setDateNaissance(clientDetails.getDateNaissance());
+            existingClientRetail.setIdNat(clientDetails.getIdNat());
+            existingClientRetail.setIdentifiantProspect(clientDetails.getIdentifiantProspect());
+            existingClientRetail.setProfession(clientDetails.getProfession());
+            existingClientRetail.setRegion(clientDetails.getRegion());
+            existingClientRetail.setVille(clientDetails.getVille());
+
+            log.info("ClientRetail mis à jour : " + existingClientRetail);
+            return clientRepository.save(existingClientRetail);
+        } else {
+            throw new MissingEntity("Client is not an instance of ClientRetail with id: " + id);
+        }
+    }
+    @Transactional
+    public Map<String, Boolean> deleteClient(long id) throws MissingEntity {
+        Client client = getClientById(id);
+        clientRepository.delete(client);
+        Map<String,Boolean> map = new HashMap<>();
+        map.put(" client deleted",Boolean.TRUE);
+        return map;
     }
 }

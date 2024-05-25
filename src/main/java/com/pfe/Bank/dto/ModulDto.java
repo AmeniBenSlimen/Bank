@@ -21,7 +21,7 @@ public class ModulDto {
     @JsonProperty("lbModul")
     private String lbModul;
 
-    @JsonIgnore
+    //@JsonIgnore
     private List<Menu> menuDtos;
 
     public static ModulDto of(Modul modul){
