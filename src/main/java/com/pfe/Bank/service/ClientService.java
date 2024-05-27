@@ -129,6 +129,9 @@ public class ClientService {
         }
         return optional.get();
     }
+    public Optional<Client> findClientById(Long clientId) {
+        return clientRepository.findById(clientId);
+    }
     public Client updateClient(long id, ClientRetail clientDetails) throws MissingEntity {
         Optional<Client> existingClientOptional = clientRepository.findById(id);
         if (!existingClientOptional.isPresent()) {
@@ -139,7 +142,7 @@ public class ClientService {
 
         if (existingClient instanceof ClientRetail) {
             ClientRetail existingClientRetail = (ClientRetail) existingClient;
-
+            existingClientRetail.setId(clientDetails.getId());
             existingClientRetail.setDateEmbauche(clientDetails.getDateEmbauche());
             existingClientRetail.setAdresse(clientDetails.getAdresse());
             existingClientRetail.setAgence(clientDetails.getAgence());
