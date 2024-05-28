@@ -37,8 +37,9 @@ public class ClientController {
         return ResponseEntity.ok(clients.size());
     }
     @GetMapping("/getAllClients")
-    public List<Client> getAllClients(){
-        return clientService.getClients();
+    public List<Client> getClients() {
+        return clienRepository.findAll();
+
     }
     @GetMapping("/getClientById/{id}")
     public Client getClientById(@PathVariable Long id) throws MissingEntity{

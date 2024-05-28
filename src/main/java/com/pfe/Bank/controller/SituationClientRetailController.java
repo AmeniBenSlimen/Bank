@@ -1,5 +1,7 @@
 package com.pfe.Bank.controller;
 
+import com.pfe.Bank.dto.SituationClientRetailDTO;
+import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.Client;
 import com.pfe.Bank.model.SituationClientRetail;
 import com.pfe.Bank.repository.SituationClientRepository;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +29,7 @@ public class SituationClientRetailController {
 
     @PostMapping(value = "/uploadSituation", consumes = {"multipart/form-data"})
     public ResponseEntity<Integer> uploadStuations(
-            @RequestPart("file")MultipartFile file) throws IOException {
+            @RequestPart("file")MultipartFile file) throws IOException, ParseException {
 
         Set<SituationClientRetail> situations = situationService.uploadSituations(file);
 
@@ -35,7 +38,13 @@ public class SituationClientRetailController {
         return ResponseEntity.ok(situations.size());
     }
     @GetMapping("/ConsulterSituation")
-    public List<SituationClientRetail> getAllClients(){
+    public List<SituationClientRetailDTO> getAllClients(){
+
         return situationService.getSituations();
+    }
+    @GetMapping("/getSituationById/{id}")
+    public SituationClientRetail getSituationtById(@PathVariable Long id) throws MissingEntity {
+        SituationClientRetail situation = situationService.getSituationById(id);
+        return situation;
     }
 }

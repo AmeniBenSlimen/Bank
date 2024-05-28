@@ -1,5 +1,6 @@
 package com.pfe.Bank.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
@@ -23,6 +24,7 @@ public class SituationClientRetail {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonBackReference
     private ClientRetail client;
 
     @Temporal(TemporalType.DATE)
@@ -82,5 +84,6 @@ public class SituationClientRetail {
     private String variableLibre5;
     private String variableLibre6;
     private String variableLibre7;
-}
 
+
+}

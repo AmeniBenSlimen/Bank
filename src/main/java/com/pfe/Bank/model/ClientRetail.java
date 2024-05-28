@@ -30,6 +30,7 @@ public class ClientRetail extends Client {
 
     private String newModelUBCI;
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<SituationClientRetail> situations;
     @Builder
     public ClientRetail (long codeRelation, String idNat, String codeRelationFlexcube, String identifiantProspect, String nom, String profession, String adresse, String agence, String ville, String region, Date dateNaissance, Date dateDebutRelation, String autre, LocalDateTime dateCreate, LocalDateTime dateUpdate,boolean isfull, long id, String nationalite, String situationFamiliale, double salaireDomicile, Date dateEmbauche, long newProfessionCode, String newModelUBCI){
