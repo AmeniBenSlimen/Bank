@@ -1,8 +1,10 @@
 package com.pfe.Bank.controller;
 
+import com.pfe.Bank.dto.SituationClientRetailDTO;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.Client;
 import com.pfe.Bank.model.ClientRetail;
+import com.pfe.Bank.model.SituationClientRetail;
 import com.pfe.Bank.repository.ClientRepository;
 import com.pfe.Bank.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -58,5 +60,9 @@ public class ClientController {
         } catch (MissingEntity e) {
             return ResponseEntity.status(404).body(null);
         }
+    }
+    @GetMapping(value = "/findByCodeRelation")
+    public List<Client> getClientsByCodeRelation(@RequestParam long codeRelation) {
+        return clientService.findByCodeRelation(codeRelation);
     }
 }

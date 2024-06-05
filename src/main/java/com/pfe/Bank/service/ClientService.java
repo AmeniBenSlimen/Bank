@@ -6,6 +6,7 @@ import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.Client;
 import com.pfe.Bank.model.ClientRetail;
+import com.pfe.Bank.model.SituationClientRetail;
 import com.pfe.Bank.repository.ClientRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -171,5 +172,8 @@ public class ClientService {
         Map<String,Boolean> map = new HashMap<>();
         map.put(" client deleted",Boolean.TRUE);
         return map;
+    }
+    public List<Client> findByCodeRelation(long codeRelation) {
+        return clientRepository.findByCodeRelation(codeRelation);
     }
 }

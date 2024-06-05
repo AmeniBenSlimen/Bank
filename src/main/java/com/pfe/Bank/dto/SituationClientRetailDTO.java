@@ -5,12 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Setter
 public class SituationClientRetailDTO {
     private Long id;
     private Long clientId;
     private Date dateDeSituation;
+    private String idNat;
+    private Date dateDebutRelation;
     private String numeroComptePrincipal;
     private double mntEnConsolidation;
     private double encoursCT;
@@ -26,7 +31,7 @@ public class SituationClientRetailDTO {
     private String ratingActuelleLegacy;
     private String classeRisqueLegacy;
     private int scoreClientLegacy;
-
+    private long codeRelation;
     private Date dateRatingLegacy;
     private String impaye;
     private double montantImpayes;
@@ -65,9 +70,13 @@ public class SituationClientRetailDTO {
     private String variableLibre6;
     private String variableLibre7;
 
+
     public SituationClientRetailDTO(SituationClientRetail situation){
         this.id = situation.getId();
+        this.idNat = situation.getClient().getIdNat();
         this.clientId = situation.getClient().getId();
+        this.dateDebutRelation = situation.getClient().getDateDebutRelation();
+        this.codeRelation= situation.getCodeRelation();
         this.dateDeSituation = situation.getDateDeSituation();
         this.numeroComptePrincipal = situation.getNumeroComptePrincipal();
         this.mntEnConsolidation = situation.getMntEnConsolidation();
@@ -121,5 +130,12 @@ public class SituationClientRetailDTO {
         this.variableLibre5 = situation.getVariableLibre5();
         this.variableLibre6 = situation.getVariableLibre6();
         this.variableLibre7 = situation.getVariableLibre7();
+    }
+    public static SituationClientRetailDTO of(SituationClientRetail situationClientRetail){
+        return new SituationClientRetailDTO(situationClientRetail);
+    }
+
+    public static List<SituationClientRetailDTO> of(List<SituationClientRetail> situations){
+        return situations.stream().map(SituationClientRetailDTO::of).collect(Collectors.toList());
     }
 }

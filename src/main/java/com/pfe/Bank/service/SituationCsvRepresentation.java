@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 public class SituationCsvRepresentation {
     @CsvBindByName(column="code_relation")
-    private long code_relation;
+    private long codeRelation;
 
     @CsvBindByName(column="date_de_situation")
     private String dateDeSituation;

@@ -47,4 +47,14 @@ public class SituationClientRetailController {
         SituationClientRetail situation = situationService.getSituationById(id);
         return situation;
     }
+    @GetMapping(value = "/searchByClientId")
+    public List<SituationClientRetailDTO> searchByClientId (@RequestParam(name = "clientId") long clientId) throws MissingEntity {
+        List<SituationClientRetail> situations = situationService.searchByClientId(clientId);
+        return SituationClientRetailDTO.of(situations);
+    }
+    @GetMapping(value = "/searchByCodeRelation")
+    public List<SituationClientRetailDTO> searchByCodeRelation (@RequestParam(name = "codeRelation") long code_relation) throws MissingEntity {
+        List<SituationClientRetail> situations = situationService.searchByCodeRelation(code_relation);
+        return SituationClientRetailDTO.of(situations);
+    }
 }

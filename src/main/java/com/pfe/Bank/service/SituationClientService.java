@@ -82,6 +82,7 @@ public class SituationClientService {
                 existingSituation.setSoldeMoyenAnnuelAnneeN(csvLine.getSoldeMoyenAnnuelAnneeN());
                 existingSituation.setSoldeMoyenAnnuelAnneeN1(csvLine.getSoldeMoyenAnnuelAnneeN1());
                 existingSituation.setAutresInformation(csvLine.getAutresInformation());
+                existingSituation.setCodeRelation(csvLine.getCodeRelation());
                 repository.save(existingSituation);
                 situations.add(existingSituation);
                 log.info("SituationClientRetail mise à jour : " + existingSituation);
@@ -115,9 +116,9 @@ public class SituationClientService {
                             Date dateDeSituation = simpleDateFormat.parse(csvLine.getDateDeSituation());
                             Date dateRatingLegacy = simpleDateFormat.parse(csvLine.getDateRatingLegacy());
 
-                            Optional<ClientRetail> existingClientOptional = clientRepository.findByCodeRelation(csvLine.getCode_relation());
+                            Optional<ClientRetail> existingClientOptional = clientRepository.findByCodeRelation(csvLine.getCodeRelation());
                             if (!existingClientOptional.isPresent()) {
-                                throw new MissingEntity("Client not found with code relation: " + csvLine.getCode_relation());
+                                throw new MissingEntity("Client not found with code relation: " + csvLine.getCodeRelation());
 
                             }
                             ClientRetail existingClient = existingClientOptional.get();
@@ -177,6 +178,7 @@ public class SituationClientService {
                                     .variableLibre5(csvLine.getVariableLibre5())
                                     .variableLibre6(csvLine.getVariableLibre6())
                                     .variableLibre7(csvLine.getVariableLibre7())
+                                    .codeRelation(csvLine.getCodeRelation())
                                     .build();
                         } catch (ParseException e) {
                             log.error("Parsing error for date: {}", csvLine.getDateDeSituation(), e);
@@ -203,6 +205,12 @@ public class SituationClientService {
     }
     public Optional<SituationClientRetail> findSituationById(Long id) {
         return repository.findById(id);
+    }
+    public List<SituationClientRetail> searchByClientId(long clientId) throws MissingEntity{
+        return situationClientRepository.findByClientId(clientId);
+    }
+    public List<SituationClientRetail> searchByCodeRelation(long code_relation) throws MissingEntity{
+        return situationClientRepository.findByCodeRelation(code_relation);
     }
 }
 

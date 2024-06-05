@@ -1,8 +1,7 @@
 package com.pfe.Bank.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,7 +25,7 @@ public class SituationClientRetail {
     @JoinColumn(name = "client_id", nullable = false)
     @JsonBackReference
     private ClientRetail client;
-
+    private Long codeRelation;
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateDeSituation;
