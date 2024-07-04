@@ -22,6 +22,7 @@ public class ModeleForm {
     private Date nextUpdateDate;
     private Date lastUsedDate;
     private boolean disabled;
+    private int annee;
     public ModeleForm(Modele modele){
         this.id=modele.getId();
         this.nom=modele.getName();
@@ -33,6 +34,6 @@ public class ModeleForm {
         this.nextUpdateDate=modele.getNextUpdateDate();
         this.lastUsedDate=modele.getLastUsedDate();
         this.disabled= modele.isDisabled();
-
+        this.annee= modele.getAnnee();
     }
 }

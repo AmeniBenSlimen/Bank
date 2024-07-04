@@ -17,12 +17,14 @@ public interface ModeleService {
     Modele getModeleById(long id) throws MissingEntity;
     public Modele updateModele(Long id, ModeleForm form) throws MissingEntity;
     void deleteModele(Long id) throws MissingEntity;
-    public List<Modele> getModelesToBeSoftDeleted();
-    public List<Modele> getModelesSoftDeleted();
+    public List<Modele> getModelesToBeSoftDisabled();
+    public List<Modele> getModelesSoftDisabled();
 
     public List<Modele> getModelesUsed();
 
     public List<Modele> getModelesNotUsed();
     public void restoreModele(Long id) throws MissingEntity;
+    public List<Modele> searchByNameAndAnnee(String name , int annee);
+
 
 }

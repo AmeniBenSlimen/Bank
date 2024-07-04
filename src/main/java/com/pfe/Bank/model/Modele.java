@@ -6,7 +6,10 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,8 +35,10 @@ public class Modele {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date lastUsedDate;
-    private boolean disabled;
-    private boolean deleted = false;
+    private boolean disabled = false;
+    private int annee;
+    @OneToMany(mappedBy = "modele", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Variable> variables;
     @PrePersist
     public void prePersist() {
         if (!updatebale) {
@@ -42,7 +47,12 @@ public class Modele {
         if (!used) {
             lastUsedDate = null;
         }
-        dateCreation = new Date();
+        if (dateCreation == null) {
+            dateCreation = new Date();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateCreation);
+        annee = calendar.get(Calendar.YEAR);
         dateUpdate = new Date();
     }
 
