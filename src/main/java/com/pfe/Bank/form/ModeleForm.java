@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ModeleForm {
     private long id;
-    private String nom;
+    private String name;
     private String description;
     private Date dateCreation;
     private Date updateDate;
@@ -25,7 +25,7 @@ public class ModeleForm {
     private int annee;
     public ModeleForm(Modele modele){
         this.id=modele.getId();
-        this.nom=modele.getName();
+        this.name=modele.getName();
         this.description= modele.getDescription();
         this.dateCreation=modele.getDateCreation();
         this.updateDate=modele.getDateUpdate();

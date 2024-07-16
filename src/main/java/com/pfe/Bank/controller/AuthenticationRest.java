@@ -53,20 +53,17 @@ public class AuthenticationRest {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request){
 
-        //email unique
-        if(userRepository.existsByEmail(request.getEmail()))
+            if(userRepository.existsByEmail(request.getEmail()))
             return ResponseEntity.badRequest()
                     .body(
                             new MessageResponse("Error : Email is already in use !!!!")
                     );
-        //username unique
         if(userRepository.existsByUsername(request.getUsername()))
             return ResponseEntity.badRequest()
                     .body(
                             new MessageResponse("Error : Username is already in use !!!!")
                     );
 
-        // cryptage du password
 
         User user = new User(
                 request.getUsername(),
@@ -76,20 +73,17 @@ public class AuthenticationRest {
                 request.getEmail(),
                 encoder.encode(request.getPassword()));
 
-        // la liste des roles
-        Set<String> subroles = request.getRole(); // récupérer les roles (String) as input
+        Set<String> subroles = request.getRole();
 
-        Set<Role> roles = new HashSet<>();  // liste des roles à accorder ---> output
+        Set<Role> roles = new HashSet<>();
 
         if(subroles == null){
-            // le role par défaut (role user)
             Role userrole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(()-> new RuntimeException("Error : role is not found"));
             roles.add(userrole);
         }
         else{
-            // un ensemble de role à traiter
-            // for each role in subroles
+
             subroles.forEach(
                     role -> {
 

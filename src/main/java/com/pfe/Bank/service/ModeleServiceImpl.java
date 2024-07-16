@@ -31,7 +31,7 @@ public class ModeleServiceImpl implements ModeleService{
     public Modele addModele(ModeleForm form) throws MissingEntity {
         Modele modele = new Modele();
         modele.setId(form.getId());
-        modele.setName(form.getNom());
+        modele.setName(form.getName());
         modele.setDescription(form.getDescription());
         modele.setDisabled(form.isDisabled());
         modele.setDateUpdate(form.getUpdateDate());
@@ -71,7 +71,7 @@ public class ModeleServiceImpl implements ModeleService{
     @Override
     public Modele updateModele(Long id, ModeleForm form) throws MissingEntity {
         Modele modele = getModeleById(id);
-        modele.setName(form.getNom());
+        modele.setName(form.getName());
         modele.setDescription(form.getDescription());
         modele.setDateUpdate(form.getUpdateDate());
         modele.setUsed(form.isUsed());

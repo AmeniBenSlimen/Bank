@@ -9,4 +9,8 @@ import java.util.Optional;
 
 public interface ScoreVariableRepository extends JpaRepository<Score,Long> {
     List<Score> findByVariable(Variable variable);
+    Optional<Score> findById(Long id);
+    List<Score> findByValeur(String valeur);
+
+
 }

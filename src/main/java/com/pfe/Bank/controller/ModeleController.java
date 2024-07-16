@@ -4,6 +4,7 @@ import com.pfe.Bank.dto.ModeleDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.form.ModeleForm;
 import com.pfe.Bank.model.Modele;
+import com.pfe.Bank.repository.ModeleRepository;
 import com.pfe.Bank.service.ModeleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,6 +25,8 @@ public class ModeleController {
 
     @Autowired
     ModeleService modeleService;
+    @Autowired
+    ModeleRepository modeleRepository;
 
     @PostMapping("/addModele")
     public ModeleDto addModele(@RequestBody ModeleForm form) throws MissingEntity {
@@ -103,4 +109,18 @@ public class ModeleController {
         return ModeleDto.of(modeles);
 
     }
+    @PutMapping("/{id}/ModeleUsed")
+    public ResponseEntity<Modele> toggleModeleUsed(@PathVariable Long id) {
+        Optional<Modele> optionalModele = modeleRepository.findById(id);
+        if (optionalModele.isPresent()) {
+            Modele modele = optionalModele.get();
+            modele.setUsed(!modele.isUsed());
+            modele.setLastUsedDate(new Date());
+            Modele updatedModele = modeleRepository.save(modele);
+            return ResponseEntity.ok(updatedModele);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

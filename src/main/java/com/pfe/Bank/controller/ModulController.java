@@ -22,7 +22,6 @@ public class ModulController {
         Modul modul =modulService.addModul(form);
         return ModulDto.of(modul);
     }
-
     @GetMapping("/getAllModul")
     List<ModulDto> getAllModules(){
         List<Modul> modul = modulService.getModules();

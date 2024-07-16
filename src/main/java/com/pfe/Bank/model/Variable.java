@@ -1,12 +1,15 @@
 package com.pfe.Bank.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +20,8 @@ import javax.persistence.*;
                 @UniqueConstraint(columnNames = "code")
 }
 )
+@JsonIgnoreProperties({"modele", "scores"})
+
 public class Variable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +31,11 @@ public class Variable {
     private Double coefficient;
     @Enumerated(EnumType.STRING)
     private Type type;
-    @JsonIgnore
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "modele_id",referencedColumnName = "id")
     private Modele modele;
+
+    @OneToMany(mappedBy = "variable", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Score> scores;
 
 }

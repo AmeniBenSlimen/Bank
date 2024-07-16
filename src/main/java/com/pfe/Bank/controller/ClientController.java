@@ -41,7 +41,6 @@ public class ClientController {
     @GetMapping("/getAllClients")
     public List<Client> getClients() {
         return clienRepository.findAll();
-
     }
     @GetMapping("/getClientById/{id}")
     public Client getClientById(@PathVariable Long id) throws MissingEntity{

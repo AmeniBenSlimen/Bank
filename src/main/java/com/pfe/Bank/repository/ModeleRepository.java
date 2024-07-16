@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ModeleRepository extends JpaRepository<Modele,Long> {
     List<Modele> findByDisabledFalse();
@@ -16,6 +17,8 @@ public interface ModeleRepository extends JpaRepository<Modele,Long> {
     List<Modele> findModelesSoftDisabled();
     List<Modele> findByUsed(boolean used);
     List<Modele> findByNameAndAnnee(String name, int annee);
+    Optional<Modele> findByUsedTrue();
+
 
 }
 
