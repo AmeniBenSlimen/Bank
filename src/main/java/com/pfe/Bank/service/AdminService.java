@@ -8,6 +8,7 @@ import com.pfe.Bank.model.User;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface AdminService {
@@ -20,6 +21,6 @@ public interface AdminService {
     void removeRoleFromUser(Long userId, Long roleId);
     public User updateUser(Long userId, UserForm form) throws MissingEntity;
     Map<String,Boolean> deleteUser(long userId) throws MissingEntity;
-
+    public Optional<User> findByUsername(String username);
 
 }

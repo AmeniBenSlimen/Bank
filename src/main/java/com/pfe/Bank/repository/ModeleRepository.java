@@ -1,7 +1,9 @@
 package com.pfe.Bank.repository;
 
+import com.pfe.Bank.dto.ModeleDto;
 import com.pfe.Bank.model.Modele;
 import com.pfe.Bank.model.SituationClientRetail;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -76,8 +76,9 @@ public class ModeleController {
     }
 
     @GetMapping("/ModelsSoftDeletedTrue")
-    public List<Modele> getModelesSoftDeleted() {
-        return modeleService.getModelesSoftDisabled();
+    public ResponseEntity<List<ModeleDto>> getModelesSoftDeleted() {
+        List<ModeleDto> modeles = modeleService.getModelesSoftDisabled();
+        return new ResponseEntity<>(modeles, HttpStatus.OK);
     }
 
     @GetMapping("/ModelUsed")

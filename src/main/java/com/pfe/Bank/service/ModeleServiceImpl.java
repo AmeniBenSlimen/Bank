@@ -1,10 +1,12 @@
 package com.pfe.Bank.service;
 
+import com.pfe.Bank.dto.ModeleDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.form.ModeleForm;
 import com.pfe.Bank.model.Modele;
 
 import com.pfe.Bank.repository.ModeleRepository;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,10 +96,13 @@ public class ModeleServiceImpl implements ModeleService{
         return modeleRepository.findModelesToBeSoftDisabled();
     }
 
-    @Override
-    public List<Modele> getModelesSoftDisabled() {
-        return modeleRepository.findModelesSoftDisabled();
+    public List<ModeleDto> getModelesSoftDisabled() {
+        List<Modele> modeles = modeleRepository.findModelesSoftDisabled();
+        List<ModeleDto> modeleDtos = ModeleDto.of(modeles);
+        return modeleDtos;
     }
+
+
 
     @Override
     public List<Modele> getModelesUsed() {

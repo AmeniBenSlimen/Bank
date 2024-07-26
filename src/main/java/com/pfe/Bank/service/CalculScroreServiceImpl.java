@@ -1,15 +1,13 @@
 package com.pfe.Bank.service;
 
+import com.pfe.Bank.dto.ScoreDto;
 import com.pfe.Bank.exception.MissingEntity;
-import com.pfe.Bank.model.Modele;
-import com.pfe.Bank.model.Role;
-import com.pfe.Bank.model.Score;
-import com.pfe.Bank.model.Variable;
-import com.pfe.Bank.repository.ScoreVariableRepository;
-import com.pfe.Bank.repository.VariableRepository;
+import com.pfe.Bank.model.*;
+import com.pfe.Bank.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +19,14 @@ public class CalculScroreServiceImpl implements CalculScoreService{
     ScoreVariableRepository scoreVariableRepository;
     @Autowired
     VariableRepository variableRepository;
+    @Autowired
+    private SVDateRepository svDateRepository;
+    @Autowired
+    private VEnumRepository svEnumRepository;
+    @Autowired
+    private SVIntervalRepository svIntervalRepository;
+    @Autowired
+    private SVNumberRepository svNumberRepository;
     @Override
     public double calculateScore(String values) {
         return 0;
@@ -47,7 +53,11 @@ public class CalculScroreServiceImpl implements CalculScoreService{
     }
 
     @Override
-    public Score addScore(Score score) {
+    public Score addScore(ScoreDto scoreDto) {
+        return null;
+    }
+
+    public Score saveScore(Score score) {
         return scoreVariableRepository.save(score);
     }
 
@@ -64,7 +74,6 @@ public class CalculScroreServiceImpl implements CalculScoreService{
     public Score updateScore(Long id, Score updatedScore) {
         Score existingScore = scoreVariableRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Score not found with id: " + id));
-        existingScore.setValeur(updatedScore.getValeur());
         existingScore.setScore(updatedScore.getScore());
 
         return scoreVariableRepository.save(existingScore);
@@ -77,5 +86,21 @@ public class CalculScroreServiceImpl implements CalculScoreService{
         Map<String,Boolean> map = new HashMap<>();
         map.put("deleted",Boolean.TRUE);
         return map;
+    }
+    @Override
+    public List<SVDate> getAllSVDates() {
+        return svDateRepository.findAll();
+    }
+    @Override
+    public List<SVEnum> getAllVEnums() {
+        return svEnumRepository.findAll();
+    }
+    @Override
+    public List<SVInterval> getAllSVIntervals() {
+        return svIntervalRepository.findAll();
+    }
+    @Override
+    public List<SVNumber> getAllVNumbers() {
+        return svNumberRepository.findAll();
     }
 }

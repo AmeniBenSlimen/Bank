@@ -9,11 +9,14 @@ import com.pfe.Bank.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -67,5 +70,17 @@ public class AdminController {
     @DeleteMapping("/deleteUser/{userId}")
     public Map<String,Boolean> deleteUser(@PathVariable Long userId) throws MissingEntity{
         return adminService.deleteUser(userId);
+    }
+    @GetMapping("/current-user")
+    public ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Optional<User> userOpt = adminService.findByUsername(userDetails.getUsername());
+        if (userOpt.isPresent()) {
+            return ResponseEntity.ok(UserDto.of(userOpt.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

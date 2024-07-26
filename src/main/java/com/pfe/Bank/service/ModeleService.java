@@ -1,5 +1,6 @@
 package com.pfe.Bank.service;
 
+import com.pfe.Bank.dto.ModeleDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.form.MenuForm;
 import com.pfe.Bank.form.ModeleForm;
@@ -18,8 +19,7 @@ public interface ModeleService {
     public Modele updateModele(Long id, ModeleForm form) throws MissingEntity;
     void deleteModele(Long id) throws MissingEntity;
     public List<Modele> getModelesToBeSoftDisabled();
-    public List<Modele> getModelesSoftDisabled();
-
+    List<ModeleDto> getModelesSoftDisabled();
     public List<Modele> getModelesUsed();
 
     public List<Modele> getModelesNotUsed();

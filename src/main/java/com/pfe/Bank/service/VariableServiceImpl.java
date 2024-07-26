@@ -1,5 +1,6 @@
 package com.pfe.Bank.service;
 
+import com.pfe.Bank.dto.ScoreDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ModeleRepository;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VariableServiceImpl implements VariableService{
@@ -20,20 +23,50 @@ public class VariableServiceImpl implements VariableService{
     ModeleRepository modeleRepository;
     @Autowired
     ScoreVariableRepository scoreVariableRepository;
-    @Override
+    /*@Override
     public Modele findById(Long id) throws MissingEntity {
         Optional<Modele> modele = modeleRepository.findById(id);
         if(!modele.isPresent()){
             throw new MissingEntity("Modele not found with Id Modele : "+id);
         }
         return modele.get();
-    }
-    @Override
+    }*/
+    /*@Override
     public Variable addVariable(Variable variable) {
 
             return variableRepository.save(variable);
-    }
+    }*/
+    public void addScoreToVariable(long variableId, Score score) throws IllegalArgumentException {
+        Variable variable = variableRepository.findById(variableId)
+                .orElseThrow(() -> new IllegalArgumentException("Variable not found"));
 
+        if ((variable.getType() == Type.NUMBER && !(score instanceof SVNumber)) ||
+                (variable.getType() == Type.DATE && !(score instanceof SVDate)) ||
+                (variable.getType() == Type.ENUMERATION && !(score instanceof SVEnum)) ||
+                (variable.getType() == Type.INTERVALE && !(score instanceof SVInterval))) {
+            throw new IllegalArgumentException("Score type does not match variable type");
+        }
+
+        score.setVariable(variable);
+        scoreVariableRepository.save(score);
+    }
+    @Override
+    public Variable findByIdVariable(Long id) {
+        return variableRepository.findById(id).orElse(null);
+    }
+    @Override
+    public Optional<Variable> getVariableWithScores(Long id) {
+        return variableRepository.findByIdWithScores(id);
+    }
+    @Override
+    public Variable createVariable(Variable variable, long modelId) {
+        Modele modele = modeleRepository.findById(modelId)
+                .orElseThrow(() -> new RuntimeException("Modele not found"));
+
+    variable.setModele(modele);
+
+    return variableRepository.save(variable);
+    }
     @Override
     public List<Variable> getAllVariable() {
         return variableRepository.findAll();
@@ -47,9 +80,9 @@ public class VariableServiceImpl implements VariableService{
         }
         return variable.get();
     }
-    public Optional<Variable> getVariableWithScores(Long id) {
+    /*public Optional<Variable> getVariableWithScores(Long id) {
         return variableRepository.findById(id);
-    }
+    }*/
 
     @Override
     public Variable updateVariable(Long id, Variable updatedVariable) {
@@ -73,7 +106,7 @@ public class VariableServiceImpl implements VariableService{
     public Variable findById(long id) {
         return variableRepository.findById(id).orElse(null);
     }
-    @Override
+  /*  @Override
     public double calculateScore(List<String> values) {
         double note = 0.0;
         for (String value : values) {
@@ -85,6 +118,29 @@ public class VariableServiceImpl implements VariableService{
         }
         return note;
     }
+*/
+    @Override
+  public List<ScoreDto> getScoresByVariableId(Long variableId) {
+      List<Score> scores = scoreVariableRepository.findByVariableId(variableId);
+      return scores.stream().map(score -> {
+          ScoreDto dto = new ScoreDto();
+          dto.setId(score.getId());
+          dto.setVariableId(score.getVariable().getId());
+          dto.setScore(score.getScore());
 
+          if (score instanceof SVEnum) {
+              dto.setEnumeration(((SVEnum) score).getValeur());
+          } else if (score instanceof SVDate) {
+              dto.setDate(((SVDate) score).getValeur());
+          } else if (score instanceof SVNumber) {
+              dto.setNum(((SVNumber) score).getValeur());
+          } else if (score instanceof SVInterval) {
+              dto.setVmin(((SVInterval) score).getvMin());
+              dto.setVmax(((SVInterval) score).getvMax());
+          }
+
+          return dto;
+      }).collect(Collectors.toList());
+  }
 
 }

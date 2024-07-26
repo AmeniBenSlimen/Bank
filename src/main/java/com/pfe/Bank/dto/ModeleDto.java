@@ -15,11 +15,17 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ModeleDto extends ModeleForm {
     private long id;
-
+    private List<VariableDto> variables;
     public static ModeleDto of(Modele modele) {
-        return new ModeleDto(modele);
+        ModeleDto dto = new ModeleDto();
+        dto.setId(modele.getId());
+        dto.setName(modele.getName());
+        dto.setDescription(modele.getDescription());
+        dto.setVariables(modele.getVariables().stream()
+                .map(VariableDto::of)
+                .collect(Collectors.toList()));
+        return dto;
     }
-
     public ModeleDto(Modele modele) {
         super(modele);
         this.id = modele.getId();
