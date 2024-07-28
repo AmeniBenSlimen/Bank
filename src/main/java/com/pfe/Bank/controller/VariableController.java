@@ -5,6 +5,7 @@ import com.pfe.Bank.dto.VariableDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ModeleRepository;
+import com.pfe.Bank.repository.ScoreVariableRepository;
 import com.pfe.Bank.repository.VariableRepository;
 import com.pfe.Bank.service.CalculScoreService;
 import com.pfe.Bank.service.VariableService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +32,8 @@ public class VariableController {
     VariableRepository variableRepository;
     @Autowired
     CalculScoreService calculScoreService;
+    @Autowired
+    ScoreVariableRepository scoreVariableRepository;
     @PostMapping("/addVariable/{modelId}")
     public ResponseEntity<Variable> addVariable(@RequestBody VariableDto variableRequest, @PathVariable long modelId) {
         try {
@@ -111,10 +115,12 @@ public class VariableController {
         variableDto.setCoefficient(variable.getCoefficient());
         variableDto.setType(variable.getType());
         variableDto.setModelId(variable.getModele().getId());
-
         variableDto.setScores(scoreDtos);
+
         return ResponseEntity.ok(variableDto);
     }
+
+
 
    /* @PostMapping("/calculateScore")
     public double calculateScore(@RequestBody List<String> values) {

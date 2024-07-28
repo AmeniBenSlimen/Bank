@@ -30,13 +30,11 @@ public class ScoreController {
     ScoreVariableRepository scoreVariableRepository;
     @PostMapping("/addScore")
     public ResponseEntity<?> addScore(@RequestBody ScoreDto scoreDto) {
-        // Récupération de la variable associée
         Variable variable = variableRepository.findById(scoreDto.getVariableId())
                 .orElseThrow(() -> new EntityNotFoundException("Variable not found"));
 
         Score score;
 
-        // Création du score en fonction du type de variable
         switch (variable.getType()) {
             case INTERVALE:
                 if (scoreDto.getVmin() == null || scoreDto.getVmax() == null) {
@@ -77,7 +75,7 @@ public class ScoreController {
                     return ResponseEntity.badRequest().body("Number value is required for type NUMBER");
                 }
                 SVNumber svNumber = new SVNumber();
-                svNumber.setValeur(Double.valueOf(scoreDto.getNum()));
+                svNumber.setValeur(scoreDto.getNum());
                 svNumber.setScore(scoreDto.getScore());
                 svNumber.setVariable(variable);
                 score = svNumber;
@@ -104,8 +102,12 @@ public class ScoreController {
     public ResponseEntity<Score> getScoreById(@PathVariable Long id) {
         Score score = scoreVariableRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Score not found with id: " + id));
+
+        ScoreDto scoreDto = new ScoreDto().convertToDto(score);
         return ResponseEntity.ok(score);
     }
+
+
     @PutMapping("/updataScore/{id}")
     public ResponseEntity<Score> updateScore(@PathVariable Long id, @RequestBody Score updatedScore) {
         Score updated = calculScoreService.updateScore(id, updatedScore);

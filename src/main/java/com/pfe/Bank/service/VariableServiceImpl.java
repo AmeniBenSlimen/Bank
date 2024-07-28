@@ -6,13 +6,16 @@ import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ModeleRepository;
 import com.pfe.Bank.repository.ScoreVariableRepository;
 import com.pfe.Bank.repository.VariableRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +26,7 @@ public class VariableServiceImpl implements VariableService{
     ModeleRepository modeleRepository;
     @Autowired
     ScoreVariableRepository scoreVariableRepository;
+
     /*@Override
     public Modele findById(Long id) throws MissingEntity {
         Optional<Modele> modele = modeleRepository.findById(id);
@@ -120,27 +124,41 @@ public class VariableServiceImpl implements VariableService{
     }
 */
     @Override
-  public List<ScoreDto> getScoresByVariableId(Long variableId) {
-      List<Score> scores = scoreVariableRepository.findByVariableId(variableId);
-      return scores.stream().map(score -> {
-          ScoreDto dto = new ScoreDto();
-          dto.setId(score.getId());
-          dto.setVariableId(score.getVariable().getId());
-          dto.setScore(score.getScore());
+    public List<ScoreDto> getScoresByVariableId(Long variableId) {
 
-          if (score instanceof SVEnum) {
-              dto.setEnumeration(((SVEnum) score).getValeur());
-          } else if (score instanceof SVDate) {
-              dto.setDate(((SVDate) score).getValeur());
-          } else if (score instanceof SVNumber) {
-              dto.setNum(((SVNumber) score).getValeur());
-          } else if (score instanceof SVInterval) {
-              dto.setVmin(((SVInterval) score).getvMin());
-              dto.setVmax(((SVInterval) score).getvMax());
-          }
+        List<Score> scores = scoreVariableRepository.findByVariable_Id(variableId);
+        List<ScoreDto> scoreDtos = new ArrayList<>();
 
-          return dto;
-      }).collect(Collectors.toList());
-  }
+        for (Score score : scores) {
+            ScoreDto scoreDto = new ScoreDto();
+            scoreDto.setId(score.getId());
+            scoreDto.setScore(score.getScore());
+
+            if (score instanceof SVDate) {
+                scoreDto.setValeur(((SVDate) score).getValeur().toString());
+                //scoreDto.setValue("date");
+
+            } else if (score instanceof SVEnum) {
+                scoreDto.setValeur(((SVEnum) score).getValeur());
+                //scoreDto.setValue("enumeration");
+
+            } else if (score instanceof SVInterval) {
+                scoreDto.setVmin(((SVInterval) score).getvMin());
+                scoreDto.setVmax(((SVInterval) score).getvMax());
+               // scoreDto.setValue("intervale");
+
+            } else if (score instanceof SVNumber) {
+                scoreDto.setValeur(((SVNumber) score).getValeur().toString());
+                //scoreDto.setValue("number");
+
+            }
+
+            scoreDtos.add(scoreDto);
+        }
+
+        return scoreDtos;
+    }
+
+
 
 }

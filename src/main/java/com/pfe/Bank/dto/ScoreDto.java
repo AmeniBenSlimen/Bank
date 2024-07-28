@@ -1,5 +1,7 @@
 package com.pfe.Bank.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.pfe.Bank.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,24 +13,19 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class ScoreDto {
     private Long id;
     private Long variableId;
     private Double score;
     private String type;
-    private Object value;
-    // Fields for SVNumber
+    private Object valeur;
     private Double num;
-
-    // Fields for SVEnum
     private String enumeration;
-
-    // Fields for SVInterval
     private String vmin;
     private String vmax;
-
-    // Fields for SVDate
     private Date date;
+
 
     public Long getId() {
         return id;
@@ -109,20 +106,20 @@ public class ScoreDto {
 
         if (score instanceof SVNumber) {
             SVNumber svNumber = (SVNumber) score;
-            dto.setType("SVNumber");
+           // dto.setDtype("SVNumber");
             dto.setNum(svNumber.getValeur());
         } else if (score instanceof SVEnum) {
             SVEnum svEnum = (SVEnum) score;
-            dto.setType("SVEnum");
+            //dto.setDtype("SVEnum");
             dto.setEnumeration(svEnum.getValeur());
         } else if (score instanceof SVInterval) {
             SVInterval svInterval = (SVInterval) score;
-            dto.setType("SVInterval");
+            //dto.setDtype("SVInterval");
             dto.setVmin(svInterval.getvMin());
             dto.setVmax(svInterval.getvMax());
         } else if (score instanceof SVDate) {
             SVDate svDate = (SVDate) score;
-            dto.setType("SVDate");
+            //dto.setDtype("SVDate");
             dto.setDate(svDate.getValeur());
         }
 
@@ -168,26 +165,26 @@ public class ScoreDto {
     }
     public ScoreDto(SVDate svDate) {
         this.id = svDate.getId();
-        this.type = "DATE";
-        this.value = svDate.getValeur();
+        //this.dtype = "DATE";
+        this.valeur = svDate.getValeur();
     }
 
     public ScoreDto(SVEnum vEnum) {
         this.id = vEnum.getId();
-        this.type = "ENUMERATION";
-        this.value = vEnum.getValeur();
+       // this.dtype = "ENUMERATION";
+        this.valeur = vEnum.getValeur();
     }
 
     public ScoreDto(SVInterval svInterval) {
         this.id = svInterval.getId();
-        this.type = "INTERVALE";
-        this.value = Map.of("min", svInterval.getvMin(), "max", svInterval.getvMax());
+        //this.dtype = "INTERVALE";
+        this.valeur = Map.of("min", svInterval.getvMin(), "max", svInterval.getvMax());
     }
 
     public ScoreDto(SVNumber vNumber) {
         this.id = vNumber.getId();
-        this.type = "NUMBER";
-        this.value = vNumber.getValeur();
+        //this.dtype = "NUMBER";
+        this.valeur = vNumber.getValeur();
     }
 
 }
