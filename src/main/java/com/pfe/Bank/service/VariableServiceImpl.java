@@ -174,7 +174,7 @@ public class VariableServiceImpl implements VariableService{
             throw new RuntimeException("Variable not found with ID: " + id);
         }
     }
-    /*@Override
+    @Override
     public double calculatePonderationForVariable(Long variableId) {
         Optional<Variable> variableOpt = variableRepository.findById(variableId);
 
@@ -190,6 +190,6 @@ public class VariableServiceImpl implements VariableService{
 
         return 0;
     }
-*/
+
 
 }
