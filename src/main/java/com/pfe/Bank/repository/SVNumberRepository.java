@@ -1,7 +1,7 @@
 package com.pfe.Bank.repository;
 
-import com.pfe.Bank.model.SVNumber;
+import com.pfe.Bank.model.NUMBER;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SVNumberRepository extends JpaRepository<SVNumber, Long> {
+public interface SVNumberRepository extends JpaRepository<NUMBER, Long> {
 }

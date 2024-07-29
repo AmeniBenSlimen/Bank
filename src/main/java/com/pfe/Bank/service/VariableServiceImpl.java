@@ -6,17 +6,13 @@ import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ModeleRepository;
 import com.pfe.Bank.repository.ScoreVariableRepository;
 import com.pfe.Bank.repository.VariableRepository;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class VariableServiceImpl implements VariableService{
@@ -44,10 +40,10 @@ public class VariableServiceImpl implements VariableService{
         Variable variable = variableRepository.findById(variableId)
                 .orElseThrow(() -> new IllegalArgumentException("Variable not found"));
 
-        if ((variable.getType() == Type.NUMBER && !(score instanceof SVNumber)) ||
-                (variable.getType() == Type.DATE && !(score instanceof SVDate)) ||
-                (variable.getType() == Type.ENUMERATION && !(score instanceof SVEnum)) ||
-                (variable.getType() == Type.INTERVALE && !(score instanceof SVInterval))) {
+        if ((variable.getType() == Type.NUMBER && !(score instanceof NUMBER)) ||
+                (variable.getType() == Type.DATE && !(score instanceof DATE)) ||
+                (variable.getType() == Type.ENUMERATION && !(score instanceof ENUMERATION)) ||
+                (variable.getType() == Type.INTERVALE && !(score instanceof INTERVALE))) {
             throw new IllegalArgumentException("Score type does not match variable type");
         }
 
@@ -134,21 +130,21 @@ public class VariableServiceImpl implements VariableService{
             scoreDto.setId(score.getId());
             scoreDto.setScore(score.getScore());
 
-            if (score instanceof SVDate) {
-                scoreDto.setValeur(((SVDate) score).getValeur().toString());
+            if (score instanceof DATE) {
+                scoreDto.setValeur(((DATE) score).getValeur().toString());
                 //scoreDto.setValue("date");
 
-            } else if (score instanceof SVEnum) {
-                scoreDto.setValeur(((SVEnum) score).getValeur());
+            } else if (score instanceof ENUMERATION) {
+                scoreDto.setValeur(((ENUMERATION) score).getValeur());
                 //scoreDto.setValue("enumeration");
 
-            } else if (score instanceof SVInterval) {
-                scoreDto.setVmin(((SVInterval) score).getvMin());
-                scoreDto.setVmax(((SVInterval) score).getvMax());
+            } else if (score instanceof INTERVALE) {
+                scoreDto.setVmin(((INTERVALE) score).getvMin());
+                scoreDto.setVmax(((INTERVALE) score).getvMax());
                // scoreDto.setValue("intervale");
 
-            } else if (score instanceof SVNumber) {
-                scoreDto.setValeur(((SVNumber) score).getValeur().toString());
+            } else if (score instanceof NUMBER) {
+                scoreDto.setValeur(((NUMBER) score).getValeur().toString());
                 //scoreDto.setValue("number");
 
             }

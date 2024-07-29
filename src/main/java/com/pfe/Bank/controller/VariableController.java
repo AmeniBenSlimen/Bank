@@ -119,7 +119,11 @@ public class VariableController {
 
         return ResponseEntity.ok(variableDto);
     }
-
+    @PutMapping("/updataVariable/{id}")
+    public ResponseEntity<Variable> updateVariable(@PathVariable Long id, @RequestBody Variable updatedVariable) {
+        Variable updateVariable = variableService.updateVariable(id, updatedVariable);
+        return ResponseEntity.ok(updateVariable);
+    }
 
 
    /* @PostMapping("/calculateScore")

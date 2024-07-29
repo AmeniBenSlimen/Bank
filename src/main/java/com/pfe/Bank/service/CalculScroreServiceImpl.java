@@ -7,7 +7,6 @@ import com.pfe.Bank.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +73,25 @@ public class CalculScroreServiceImpl implements CalculScoreService{
     public Score updateScore(Long id, Score updatedScore) {
         Score existingScore = scoreVariableRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Score not found with id: " + id));
+
         existingScore.setScore(updatedScore.getScore());
+
+        if (existingScore instanceof NUMBER && updatedScore instanceof NUMBER) {
+            ((NUMBER) existingScore).setValeur(((NUMBER) updatedScore).getValeur());
+        } else if (existingScore instanceof ENUMERATION && updatedScore instanceof ENUMERATION) {
+            ((ENUMERATION) existingScore).setValeur(((ENUMERATION) updatedScore).getValeur());
+        } else if (existingScore instanceof INTERVALE && updatedScore instanceof INTERVALE) {
+            ((INTERVALE) existingScore).setvMin(((INTERVALE) updatedScore).getvMin());
+            ((INTERVALE) existingScore).setvMax(((INTERVALE) updatedScore).getvMax());
+        } else if (existingScore instanceof DATE && updatedScore instanceof DATE) {
+            ((DATE) existingScore).setValeur(((DATE) updatedScore).getValeur());
+        } else {
+            throw new IllegalArgumentException("Unsupported score type");
+        }
 
         return scoreVariableRepository.save(existingScore);
     }
+
 
     @Override
     public Map<String, Boolean> deleteScore(long id) throws MissingEntity {
@@ -88,19 +102,23 @@ public class CalculScroreServiceImpl implements CalculScoreService{
         return map;
     }
     @Override
-    public List<SVDate> getAllSVDates() {
+    public List<DATE> getAllSVDates() {
         return svDateRepository.findAll();
     }
     @Override
-    public List<SVEnum> getAllVEnums() {
+    public List<ENUMERATION> getAllVEnums() {
         return svEnumRepository.findAll();
     }
     @Override
-    public List<SVInterval> getAllSVIntervals() {
+    public List<INTERVALE> getAllSVIntervals() {
         return svIntervalRepository.findAll();
     }
     @Override
-    public List<SVNumber> getAllVNumbers() {
+    public List<NUMBER> getAllVNumbers() {
         return svNumberRepository.findAll();
+    }
+    @Override
+    public Optional<Score> findById(Long id) {
+        return scoreVariableRepository.findById(id);
     }
 }

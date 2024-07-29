@@ -6,6 +6,7 @@ import com.pfe.Bank.model.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface CalculScoreService {
     double calculateScore(String values);
@@ -15,12 +16,14 @@ public interface CalculScoreService {
     Score updateScore(Long id, Score updatedScore);
     public Map<String,Boolean> deleteScore(long id) throws MissingEntity;
     public Score saveScore(Score score);
-    public List<SVDate> getAllSVDates();
+    public List<DATE> getAllSVDates();
 
-    public List<SVEnum> getAllVEnums();
+    public List<ENUMERATION> getAllVEnums();
 
-    public List<SVInterval> getAllSVIntervals();
+    public List<INTERVALE> getAllSVIntervals();
 
-    public List<SVNumber> getAllVNumbers();
+    public List<NUMBER> getAllVNumbers();
+    Optional<Score> findById(Long id);
+
 
 }

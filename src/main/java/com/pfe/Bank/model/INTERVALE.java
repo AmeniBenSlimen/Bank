@@ -1,9 +1,7 @@
 package com.pfe.Bank.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -11,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class SVInterval extends Score {
+public class INTERVALE extends Score {
 
     @Column(name = "vmin")
     private String vMin;

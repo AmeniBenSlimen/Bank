@@ -6,17 +6,18 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 
 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class SVEnum extends Score{
-    private String valeur;
+public class NUMBER extends Score{
+    private Double valeur;
 
-    public String getValeur() {
+    public Double getValeur() {
         return valeur;
     }
 
-    public void setValeur(String valeur) {
+    public void setValeur(Double valeur) {
         this.valeur = valeur;
     }
 }

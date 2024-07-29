@@ -22,11 +22,13 @@ public class Score {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private double score;
-    //private String dtype;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "variable_id", nullable = false)
     private Variable variable;
     @Transient
     private Long variableId;
+    public Object getValeur() {
+        return null;
+    }
 }

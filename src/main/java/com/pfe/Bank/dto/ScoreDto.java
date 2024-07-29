@@ -1,7 +1,5 @@
 package com.pfe.Bank.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.pfe.Bank.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +23,15 @@ public class ScoreDto {
     private String vmin;
     private String vmax;
     private Date date;
+    private String dtype;
 
+    public String getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
+    }
 
     public Long getId() {
         return id;
@@ -104,86 +110,97 @@ public class ScoreDto {
         dto.setId(score.getId());
         dto.setScore(score.getScore());
 
-        if (score instanceof SVNumber) {
-            SVNumber svNumber = (SVNumber) score;
-           // dto.setDtype("SVNumber");
-            dto.setNum(svNumber.getValeur());
-        } else if (score instanceof SVEnum) {
-            SVEnum svEnum = (SVEnum) score;
-            //dto.setDtype("SVEnum");
-            dto.setEnumeration(svEnum.getValeur());
-        } else if (score instanceof SVInterval) {
-            SVInterval svInterval = (SVInterval) score;
-            //dto.setDtype("SVInterval");
-            dto.setVmin(svInterval.getvMin());
-            dto.setVmax(svInterval.getvMax());
-        } else if (score instanceof SVDate) {
-            SVDate svDate = (SVDate) score;
-            //dto.setDtype("SVDate");
-            dto.setDate(svDate.getValeur());
+        if (score instanceof NUMBER) {
+            NUMBER number = (NUMBER) score;
+            dto.setDtype("NUMBER");
+            dto.setNum(number.getValeur());
+            dto.setValeur(number.getValeur());
+            System.out.println("NUMBER Score - valeur: " + number.getValeur());
+        } else if (score instanceof ENUMERATION) {
+            ENUMERATION enumScore = (ENUMERATION) score;
+            dto.setDtype("ENUMERATION");
+            dto.setEnumeration(enumScore.getValeur());
+            dto.setValeur(enumScore.getValeur());
+            System.out.println("ENUMERATION Score - valeur: " + enumScore.getValeur());
+        } else if (score instanceof INTERVALE) {
+            INTERVALE intervalScore = (INTERVALE) score;
+            dto.setDtype("INTERVALE");
+            dto.setVmin(intervalScore.getvMin());
+            dto.setVmax(intervalScore.getvMax());
+            dto.setValeur(Map.of("min", intervalScore.getvMin(), "max", intervalScore.getvMax()));
+            System.out.println("INTERVALE Score - vMin: " + intervalScore.getvMin() + ", vMax: " + intervalScore.getvMax());
+        } else if (score instanceof DATE) {
+            DATE dateScore = (DATE) score;
+            dto.setDtype("DATE");
+            dto.setDate(dateScore.getValeur());
+            dto.setValeur(dateScore.getValeur());
+            System.out.println("DATE Score - valeur: " + dateScore.getValeur());
         }
 
         return dto;
     }
 
+
+
+
     public Score convertToEntity(ScoreDto dto) {
         Score score = null;
 
         switch (dto.getType()) {
-            case "SVNumber":
-                SVNumber svNumber = new SVNumber();
-                svNumber.setId(dto.getId());
-                svNumber.setScore(dto.getScore());
-                svNumber.setValeur(dto.getNum());
-                score = svNumber;
+            case "NUMBER":
+                NUMBER NUMBER = new NUMBER();
+                NUMBER.setId(dto.getId());
+                NUMBER.setScore(dto.getScore());
+                NUMBER.setValeur(dto.getNum());
+                score = NUMBER;
                 break;
-            case "SVEnum":
-                SVEnum svEnum = new SVEnum();
-                svEnum.setId(dto.getId());
-                svEnum.setScore(dto.getScore());
-                svEnum.setValeur(dto.getEnumeration());
-                score = svEnum;
+            case "ENUMERATION":
+                ENUMERATION ENUMERATION = new ENUMERATION();
+                ENUMERATION.setId(dto.getId());
+                ENUMERATION.setScore(dto.getScore());
+                ENUMERATION.setValeur(dto.getEnumeration());
+                score = ENUMERATION;
                 break;
-            case "SVInterval":
-                SVInterval svInterval = new SVInterval();
-                svInterval.setId(dto.getId());
-                svInterval.setScore(dto.getScore());
-                svInterval.setvMin(dto.getVmin());
-                svInterval.setvMax(dto.getVmax());
-                score = svInterval;
+            case "INTERVALE":
+                INTERVALE INTERVALE = new INTERVALE();
+                INTERVALE.setId(dto.getId());
+                INTERVALE.setScore(dto.getScore());
+                INTERVALE.setvMin(dto.getVmin());
+                INTERVALE.setvMax(dto.getVmax());
+                score = INTERVALE;
                 break;
-            case "SVDate":
-                SVDate svDate = new SVDate();
-                svDate.setId(dto.getId());
-                svDate.setScore(dto.getScore());
-                svDate.setValeur(dto.getDate());
-                score = svDate;
+            case "DATE":
+                DATE DATE = new DATE();
+                DATE.setId(dto.getId());
+                DATE.setScore(dto.getScore());
+                DATE.setValeur(dto.getDate());
+                score = DATE;
                 break;
         }
 
         return score;
     }
-    public ScoreDto(SVDate svDate) {
-        this.id = svDate.getId();
-        //this.dtype = "DATE";
-        this.valeur = svDate.getValeur();
+    public ScoreDto(DATE DATE) {
+        this.id = DATE.getId();
+        this.dtype = "DATE";
+        this.valeur = DATE.getValeur();
     }
 
-    public ScoreDto(SVEnum vEnum) {
+    public ScoreDto(ENUMERATION vEnum) {
         this.id = vEnum.getId();
-       // this.dtype = "ENUMERATION";
+       this.dtype = "ENUMERATION";
         this.valeur = vEnum.getValeur();
     }
 
-    public ScoreDto(SVInterval svInterval) {
-        this.id = svInterval.getId();
-        //this.dtype = "INTERVALE";
-        this.valeur = Map.of("min", svInterval.getvMin(), "max", svInterval.getvMax());
+    public ScoreDto(INTERVALE INTERVALE) {
+        this.id = INTERVALE.getId();
+        this.dtype = "INTERVALE";
+        this.valeur = Map.of("min", INTERVALE.getvMin(), "max", INTERVALE.getvMax());
     }
 
-    public ScoreDto(SVNumber vNumber) {
+    public ScoreDto(NUMBER vNumber) {
         this.id = vNumber.getId();
-        //this.dtype = "NUMBER";
+        this.dtype = "NUMBER";
         this.valeur = vNumber.getValeur();
     }
 

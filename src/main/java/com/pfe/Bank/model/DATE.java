@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class SVDate extends Score{
+public class DATE extends Score{
     @Temporal(TemporalType.DATE)
     private Date valeur;
 

@@ -34,19 +34,19 @@ public class VariableDto {
                     scoreDto.setId(score.getId());
                     scoreDto.setScore(score.getScore());
                     // Removed setValeur, use appropriate mapping based on Score type
-                    if (score instanceof SVNumber) {
-                        scoreDto.setType("SVNumber");
-                        scoreDto.setNum(((SVNumber) score).getValeur());
-                    } else if (score instanceof SVEnum) {
-                        scoreDto.setType("SVEnum");
-                        scoreDto.setEnumeration(((SVEnum) score).getValeur());
-                    } else if (score instanceof SVInterval) {
-                        scoreDto.setType("SVInterval");
-                        scoreDto.setVmin(((SVInterval) score).getvMin());
-                        scoreDto.setVmax(((SVInterval) score).getvMax());
-                    } else if (score instanceof SVDate) {
-                        scoreDto.setType("SVDate");
-                        scoreDto.setDate(((SVDate) score).getValeur());
+                    if (score instanceof NUMBER) {
+                        scoreDto.setType("NUMBER");
+                        scoreDto.setNum(((NUMBER) score).getValeur());
+                    } else if (score instanceof ENUMERATION) {
+                        scoreDto.setType("ENUMERATION");
+                        scoreDto.setEnumeration(((ENUMERATION) score).getValeur());
+                    } else if (score instanceof INTERVALE) {
+                        scoreDto.setType("INTERVALE");
+                        scoreDto.setVmin(((INTERVALE) score).getvMin());
+                        scoreDto.setVmax(((INTERVALE) score).getvMax());
+                    } else if (score instanceof DATE) {
+                        scoreDto.setType("DATE");
+                        scoreDto.setDate(((DATE) score).getValeur());
                     }
                     return scoreDto;
                 })
