@@ -25,6 +25,7 @@ public interface ModeleService {
     public List<Modele> getModelesNotUsed();
     public void restoreModele(Long id) throws MissingEntity;
     public List<Modele> searchByNameAndAnnee(String name , int annee);
+    double calculateModelPonderation(Long id);
 
 
 }

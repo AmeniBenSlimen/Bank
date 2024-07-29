@@ -129,5 +129,21 @@ public class ModeleServiceImpl implements ModeleService{
         logger.info("Found {} models", result.size());
         return result;
     }
-
+    @Override
+    public double calculateModelPonderation(Long id) {
+        Optional<Modele> modelOpt = modeleRepository.findById(id);
+        if (modelOpt.isPresent()) {
+            Modele model = modelOpt.get();
+            return model.getVariables().stream().mapToDouble(variable -> {
+                double coefficient = variable.getCoefficient();
+                double averageScore = variable.getScores().stream()
+                        .mapToDouble(score -> score.getScore())
+                        .average()
+                        .orElse(0.0);
+                return averageScore * coefficient;
+            }).sum();
+        } else {
+            throw new RuntimeException("Model not found");
+        }
+    }
 }

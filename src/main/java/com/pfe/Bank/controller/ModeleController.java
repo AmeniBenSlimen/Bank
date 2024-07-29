@@ -123,5 +123,13 @@ public class ModeleController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    @GetMapping("/ponderationModele/{id}")
+    public ResponseEntity<?> getModelPonderation(@PathVariable Long id) {
+        try {
+            double ponderation = modeleService.calculateModelPonderation(id);
+            return ResponseEntity.ok(ponderation);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Model not found");
+        }
+    }
 }
