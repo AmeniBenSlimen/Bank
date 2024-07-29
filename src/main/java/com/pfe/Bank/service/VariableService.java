@@ -29,6 +29,6 @@ public interface VariableService {
     public Optional<Variable> getVariableWithScores(Long id);
     public List<ScoreDto> getScoresByVariableId(Long variableId);
     void deleteVariable(Long id);
-    double calculatePonderationForVariable(Long variableId);
+    //double calculatePonderationForVariable(Long variableId);
 
 }

@@ -10,9 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VariableServiceImpl implements VariableService{
@@ -121,38 +125,46 @@ public class VariableServiceImpl implements VariableService{
 */
     @Override
     public List<ScoreDto> getScoresByVariableId(Long variableId) {
-
         List<Score> scores = scoreVariableRepository.findByVariable_Id(variableId);
-        List<ScoreDto> scoreDtos = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Modifiez le format selon vos besoins
 
-        for (Score score : scores) {
+        return scores.stream().map(score -> {
             ScoreDto scoreDto = new ScoreDto();
             scoreDto.setId(score.getId());
+            scoreDto.setVariableId(score.getVariable().getId());
             scoreDto.setScore(score.getScore());
+            scoreDto.setType(score instanceof NUMBER ? "NUMBER" :
+                    score instanceof ENUMERATION ? "ENUMERATION" :
+                            score instanceof INTERVALE ? "INTERVALE" :
+                                    score instanceof DATE ? "DATE" : "UNKNOWN");
 
-            if (score instanceof DATE) {
-                scoreDto.setValeur(((DATE) score).getValeur().toString());
-                //scoreDto.setValue("date");
-
+            // Mappage des valeurs spécifiques en fonction du type
+            if (score instanceof NUMBER) {
+                NUMBER svNumber = (NUMBER) score;
+                scoreDto.setValeur(svNumber.getValeur());
             } else if (score instanceof ENUMERATION) {
-                scoreDto.setValeur(((ENUMERATION) score).getValeur());
-                //scoreDto.setValue("enumeration");
-
+                ENUMERATION svEnum = (ENUMERATION) score;
+                scoreDto.setValeur(svEnum.getValeur());
             } else if (score instanceof INTERVALE) {
-                scoreDto.setVmin(((INTERVALE) score).getvMin());
-                scoreDto.setVmax(((INTERVALE) score).getvMax());
-               // scoreDto.setValue("intervale");
-
-            } else if (score instanceof NUMBER) {
-                scoreDto.setValeur(((NUMBER) score).getValeur().toString());
-                //scoreDto.setValue("number");
-
+                INTERVALE svInterval = (INTERVALE) score;
+                scoreDto.setVmin(svInterval.getvMin());
+                scoreDto.setVmax(svInterval.getvMax());
+            } else if (score instanceof DATE) {
+                DATE svDate = (DATE) score;
+                try {
+                    // Assurez-vous que svDate.getValeur() retourne une chaîne de caractères
+                    String dateString = String.valueOf(svDate.getValeur());
+                    Date dateValue = dateFormat.parse(dateString);
+                    scoreDto.setDate(dateValue); // Assurez-vous que dateValue est de type Date
+                    scoreDto.setValeur(dateString); // Stockez également la valeur en tant que String si nécessaire
+                } catch (ParseException e) {
+                    e.printStackTrace(); // Gérer l'exception selon les besoins
+                }
             }
 
-            scoreDtos.add(scoreDto);
-        }
-
-        return scoreDtos;
+            // Mettez à jour les autres champs selon les besoins
+            return scoreDto;
+        }).collect(Collectors.toList());
     }
     @Override
     public void deleteVariable(Long id) {
@@ -162,7 +174,7 @@ public class VariableServiceImpl implements VariableService{
             throw new RuntimeException("Variable not found with ID: " + id);
         }
     }
-    @Override
+    /*@Override
     public double calculatePonderationForVariable(Long variableId) {
         Optional<Variable> variableOpt = variableRepository.findById(variableId);
 
@@ -178,6 +190,6 @@ public class VariableServiceImpl implements VariableService{
 
         return 0;
     }
-
+*/
 
 }

@@ -133,10 +133,10 @@ public class VariableController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/ponderation/{id}")
+    /*@GetMapping("/ponderation/{id}")
     public double getPonderationForVariable(@PathVariable Long id) {
         return variableService.calculatePonderationForVariable(id);
-    }
+    }*/
    /* @PostMapping("/calculateScore")
     public double calculateScore(@RequestBody List<String> values) {
         return variableService.calculateScore(values);
