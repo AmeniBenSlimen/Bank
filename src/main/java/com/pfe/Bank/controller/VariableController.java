@@ -124,8 +124,19 @@ public class VariableController {
         Variable updateVariable = variableService.updateVariable(id, updatedVariable);
         return ResponseEntity.ok(updateVariable);
     }
-
-
+    @DeleteMapping("/deleteVariable/{id}")
+    public ResponseEntity<Void> deleteVariable(@PathVariable Long id) {
+        try {
+            variableService.deleteVariable(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/ponderation/{id}")
+    public double getPonderationForVariable(@PathVariable Long id) {
+        return variableService.calculatePonderationForVariable(id);
+    }
    /* @PostMapping("/calculateScore")
     public double calculateScore(@RequestBody List<String> values) {
         return variableService.calculateScore(values);

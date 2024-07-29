@@ -188,7 +188,7 @@ public class ScoreDto {
 
     public ScoreDto(ENUMERATION vEnum) {
         this.id = vEnum.getId();
-       this.dtype = "ENUMERATION";
+        this.dtype = "ENUMERATION";
         this.valeur = vEnum.getValeur();
     }
 

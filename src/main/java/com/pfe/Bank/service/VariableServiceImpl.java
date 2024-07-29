@@ -154,7 +154,30 @@ public class VariableServiceImpl implements VariableService{
 
         return scoreDtos;
     }
+    @Override
+    public void deleteVariable(Long id) {
+        if (variableRepository.existsById(id)) {
+            variableRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Variable not found with ID: " + id);
+        }
+    }
+    @Override
+    public double calculatePonderationForVariable(Long variableId) {
+        Optional<Variable> variableOpt = variableRepository.findById(variableId);
 
+        if (variableOpt.isPresent()) {
+            Variable variable = variableOpt.get();
+            double coefficient = variable.getCoefficient();
+            double totalCoefficient = variableRepository.findAll().stream()
+                    .mapToDouble(Variable::getCoefficient)
+                    .sum();
+
+            return totalCoefficient > 0 ? coefficient / totalCoefficient : 0;
+        }
+
+        return 0;
+    }
 
 
 }
