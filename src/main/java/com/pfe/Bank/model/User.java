@@ -65,7 +65,13 @@ public class User {
 
     public User() {
     }
+    public boolean isStatus() {
+        return status;
+    }
 
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
     public User(String username, String fullname,String phone, Boolean status,String email, String password) {
         this.username = username;
         this.fullname=fullname;

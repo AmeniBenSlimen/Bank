@@ -1,6 +1,7 @@
 package com.pfe.Bank.service;
 
 import com.pfe.Bank.dto.ScoreDto;
+import com.pfe.Bank.dto.VariableDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ModeleRepository;
@@ -191,5 +192,48 @@ public class VariableServiceImpl implements VariableService{
         return 0;
     }
 
+    @Override
+    public List<VariableDto> getVariablesByModeleId(Long modeleId) {
+        return variableRepository.findByModeleIdAndUsedTrue(modeleId)
+                .stream()
+                .map(variable -> {
+                    // Directly populate VariableDto
+                    VariableDto dto = new VariableDto();
+                    dto.setId(variable.getId());
+                    dto.setCode(variable.getCode());
+                    dto.setDescription(variable.getDescription());
+                    dto.setCoefficient(variable.getCoefficient());
+                    dto.setType(variable.getType());
+                    dto.setModelId(variable.getModele().getId());
+
+                    List<ScoreDto> scoreDtos = variable.getScores().stream()
+                            .map(score -> {
+                                ScoreDto scoreDto = new ScoreDto();
+                                scoreDto.setId(score.getId());
+                                scoreDto.setScore(score.getScore());
+                                // Map based on Score type
+                                if (score instanceof NUMBER) {
+                                    scoreDto.setType("NUMBER");
+                                    scoreDto.setNum(((NUMBER) score).getValeur());
+                                } else if (score instanceof ENUMERATION) {
+                                    scoreDto.setType("ENUMERATION");
+                                    scoreDto.setEnumeration(((ENUMERATION) score).getValeur());
+                                } else if (score instanceof INTERVALE) {
+                                    scoreDto.setType("INTERVALE");
+                                    scoreDto.setVmin(((INTERVALE) score).getvMin());
+                                    scoreDto.setVmax(((INTERVALE) score).getvMax());
+                                } else if (score instanceof DATE) {
+                                    scoreDto.setType("DATE");
+                                    scoreDto.setDate(((DATE) score).getValeur());
+                                }
+                                return scoreDto;
+                            })
+                            .collect(Collectors.toList());
+
+                    dto.setScores(scoreDtos);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
 }

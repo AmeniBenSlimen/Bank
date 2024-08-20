@@ -27,7 +27,7 @@ public class VariableDto {
         dto.setDescription(variable.getDescription());
         dto.setCoefficient(variable.getCoefficient());
         dto.setType(variable.getType());
-
+        dto.setModelId(variable.getModele().getId());
         dto.setScores(variable.getScores().stream()
                 .map(score -> {
                     ScoreDto scoreDto = new ScoreDto();

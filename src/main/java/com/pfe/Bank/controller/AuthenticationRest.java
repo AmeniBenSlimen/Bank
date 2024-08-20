@@ -93,7 +93,7 @@ public class AuthenticationRest {
                                         .orElseThrow(() -> new RuntimeException("Error : role is not found"));
                                 roles.add(roleadmin);
                             case "secretaire":
-                                Role rolesec = roleRepository.findByName(ERole.ROLE_SECRETAIRE)
+                                Role rolesec = roleRepository.findByName(ERole.ROLE_MANAGER)
                                         .orElseThrow(()-> new RuntimeException("Error : role is not found"));
                                 roles.add(rolesec);
                             default:
@@ -109,8 +109,8 @@ public class AuthenticationRest {
 
         }
         user.setStatus(false);
-        user.setRoles(roles); // accorder la liste des Roles
-        userRepository.save(user); // enregistrer dans la base
+        user.setRoles(roles);
+        userRepository.save(user);
 
         return  ResponseEntity.ok(new MessageResponse("User Registred successfully !!!!"));
 

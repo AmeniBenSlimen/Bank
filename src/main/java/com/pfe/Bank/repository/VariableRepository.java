@@ -15,4 +15,7 @@ public interface VariableRepository extends JpaRepository<Variable,Long> {
     void deleteById(Long id);
     @Query("SELECT v FROM Variable v LEFT JOIN FETCH v.scores WHERE v.id = :id")
     Optional<Variable> findByIdWithScores(@Param("id") Long id);
+    @Query("SELECT v FROM Variable v WHERE v.modele.id = :modeleId AND v.modele.used = true")
+    List<Variable> findByModeleIdAndUsedTrue(@Param("modeleId") Long modeleId);
+
 }

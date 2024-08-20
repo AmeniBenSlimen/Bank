@@ -1,6 +1,7 @@
 package com.pfe.Bank.service;
 
 import com.pfe.Bank.dto.ScoreDto;
+import com.pfe.Bank.dto.VariableDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.*;
 
@@ -30,5 +31,6 @@ public interface VariableService {
     public List<ScoreDto> getScoresByVariableId(Long variableId);
     void deleteVariable(Long id);
     double calculatePonderationForVariable(Long variableId);
+    List<VariableDto> getVariablesByModeleId(Long modeleId);
 
 }

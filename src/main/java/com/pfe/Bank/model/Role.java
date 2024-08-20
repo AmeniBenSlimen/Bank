@@ -28,5 +28,6 @@ public class Role {
     private String codrole;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Privilege> privileges;
 }

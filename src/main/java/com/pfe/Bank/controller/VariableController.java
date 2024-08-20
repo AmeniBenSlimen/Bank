@@ -137,6 +137,9 @@ public class VariableController {
     public double getPonderationForVariable(@PathVariable Long id) {
         return variableService.calculatePonderationForVariable(id);
     }
-
+    @GetMapping("/VariableModele/{modeleId}")
+    public List<VariableDto> getVariablesByModeleId(@PathVariable Long modeleId) {
+        return variableService.getVariablesByModeleId(modeleId);
+    }
 }
 

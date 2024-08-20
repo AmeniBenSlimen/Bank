@@ -83,4 +83,15 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<User> activateUser(@PathVariable Long id) {
+        User activatedUser = adminService.activateUser(id);
+        return ResponseEntity.ok(activatedUser);
+    }
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<User> deactivateUser(@PathVariable Long id) {
+        User deactivatedUser = adminService.deactivateUser(id);
+        return ResponseEntity.ok(deactivatedUser);
+    }
 }

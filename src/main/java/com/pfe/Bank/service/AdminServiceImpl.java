@@ -13,13 +13,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    private EmailService emailService;
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -108,5 +110,41 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+    @Override
+    public User activateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+        user.setStatus(true);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+        user.setStatus(false);
+        return userRepository.save(user);
+    }
+    public User createUser(User user) {
+        user.setStatus(false);
+        User createdUser = userRepository.save(user);
+
+        String adminEmail = "amenibenslimen9@gmail.com";
+        String subject = "Nouvel utilisateur à activer";
+        String text = String.format(
+                "Un nouvel utilisateur a créé un compte et attend l'activation.\n\n" +
+                        "Détails de l'utilisateur:\n" +
+                        "ID: %d\n" +
+                        "Nom: %s\n" +
+                        "Prénom: %s\n" +
+                        "E-mail: %s\n\n" +
+                        "Veuillez activer son compte en visitant le lien suivant :\n" +
+                        "http://localhost:8080/admin/activate/%d",
+                createdUser.getId(), createdUser.getUsername(), createdUser.getFullname(), createdUser.getEmail(), createdUser.getId()
+        );
+        emailService.sendEmail(adminEmail, subject, text);
+
+        return createdUser;
     }
 }

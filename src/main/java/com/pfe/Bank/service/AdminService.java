@@ -22,5 +22,6 @@ public interface AdminService {
     public User updateUser(Long userId, UserForm form) throws MissingEntity;
     Map<String,Boolean> deleteUser(long userId) throws MissingEntity;
     public Optional<User> findByUsername(String username);
-
+    User activateUser(Long id);
+    User deactivateUser(Long id);
 }
