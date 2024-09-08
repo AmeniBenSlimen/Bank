@@ -12,6 +12,7 @@ import com.pfe.Bank.service.PrivilegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,12 +25,10 @@ import java.util.stream.Collectors;
 public class PrivilegeController {
     @Autowired
     PrivilegeService privilegeService;
-
     @PostMapping("/add")
     public ResponseEntity<?> addPrivilege(@RequestParam long roleId, @RequestParam String menuId) {
         return ResponseEntity.ok(new PrivilegeDto(privilegeService.addPrivilege(roleId, menuId)));
     }
-
     @DeleteMapping("/deletePrivilege/{id}")
     public void deletePrivilege(@PathVariable long id) {
         privilegeService.deletePrivilege(id);
@@ -44,7 +43,6 @@ public class PrivilegeController {
         List<PrivilegeDto> privilegedtos = privileges.stream().map(PrivilegeDto::new).collect(Collectors.toList());
         return new ResponseEntity<>(privilegedtos, HttpStatus.OK);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<PrivilegeDto> getPrivilegeById(@PathVariable long id) {
         Privilege privilege = privilegeService.getPrivilegeById(id);
@@ -53,7 +51,6 @@ public class PrivilegeController {
         }
         return new ResponseEntity<>(new PrivilegeDto(privilege), HttpStatus.OK);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<PrivilegeDto> updatePrivilege(@PathVariable long id, @RequestParam Long roleId, @RequestParam String menuId) {

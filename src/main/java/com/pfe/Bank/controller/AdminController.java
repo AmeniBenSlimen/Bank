@@ -6,18 +6,17 @@ import com.pfe.Bank.form.UserForm;
 import com.pfe.Bank.model.Role;
 import com.pfe.Bank.model.User;
 import com.pfe.Bank.service.AdminService;
+import com.pfe.Bank.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/auth")
@@ -26,7 +25,9 @@ public class AdminController {
     @Autowired
     AdminService adminService;
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
-
+    @Autowired
+    EmailService emailService;
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     List<UserDto> getAll(){
         List<User> users = adminService.getAllUsers();
@@ -82,5 +83,25 @@ public class AdminController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @PutMapping("/{userId}/activate")
+    public ResponseEntity<Map<String, String>> activateUser(@PathVariable Long userId) {
+        User user = adminService.activateUser(userId);
+
+        // Envoyer l'email après l'activation
+        emailService.sendAccountActivatedEmail(user.getEmail(), user.getUsername());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User activated successfully");
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<User> deactivateUser(@PathVariable Long id) {
+        User deactivatedUser = adminService.deactivateUser(id);
+        return ResponseEntity.ok(deactivatedUser);
     }
 }

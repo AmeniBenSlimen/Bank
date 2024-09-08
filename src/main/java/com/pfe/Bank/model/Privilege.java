@@ -1,5 +1,7 @@
 package com.pfe.Bank.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,10 +18,13 @@ public class Privilege {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "cod_role",referencedColumnName = "id")
+    @JsonBackReference
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_role", referencedColumnName = "id")
     private Role role;
 
+
+    @JsonIgnore
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_menu",referencedColumnName = "cod_menu")
     private Menu menu;

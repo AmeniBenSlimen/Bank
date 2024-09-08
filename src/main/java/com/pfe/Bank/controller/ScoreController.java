@@ -7,6 +7,7 @@ import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ScoreVariableRepository;
 import com.pfe.Bank.repository.VariableRepository;
 import com.pfe.Bank.service.CalculScoreService;
+import com.pfe.Bank.service.NotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,6 +28,8 @@ public class ScoreController {
     VariableRepository variableRepository;
     @Autowired
     ScoreVariableRepository scoreVariableRepository;
+    @Autowired
+    NotationService notationService;
     @PostMapping("/addScore")
     public ResponseEntity<?> addScore(@RequestBody ScoreDto scoreDto) {
         Variable variable = variableRepository.findById(scoreDto.getVariableId())
@@ -173,5 +177,34 @@ public class ScoreController {
     @DeleteMapping("/deleteScore/{id}")
     public Map<String,Boolean> deleteScore(@PathVariable Long id) throws MissingEntity {
         return calculScoreService.deleteScore(id);
+    }
+    @PostMapping("notation")
+    public Notation saveNotation(@RequestBody Notation notation){
+        return notationService.createNotation(notation);
+    }
+
+    @PutMapping("notation")
+    public Notation updateNotation(@RequestBody NotationDto notation){
+        return notationService.updateNotation(notation);
+    }
+
+    @PostMapping("/note")
+    public Notation calculateNote(@RequestBody Notation notation){
+        return notationService.determineNote(notation);
+    }
+
+    @GetMapping("/done")
+    public List<NotationQuest> getTerminatedations(){
+        return notationService.getTerminated();
+    }
+
+    @GetMapping("/inProgress")
+    public List<Notation> getInProgress(){
+        return notationService.getInProgress();
+    }
+
+    @GetMapping("/variableResponses/{id}")
+    public List<VariableResponse> getVariableResponses(@PathVariable Long id){
+        return notationService.getInProgress(id);
     }
 }

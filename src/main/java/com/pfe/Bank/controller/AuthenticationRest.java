@@ -13,6 +13,8 @@ import com.pfe.Bank.repository.UserRepository;
 import com.pfe.Bank.security.jwt.JwtUtils;
 import com.pfe.Bank.security.services.UserDetailsImpl;
 
+import com.pfe.Bank.service.AdminService;
+import com.pfe.Bank.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +51,13 @@ public class AuthenticationRest {
 
     @Autowired
     PasswordEncoder encoder;
-
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private AdminService adminService;
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request){
+        System.out.println("Received signup request: " + request);
 
             if(userRepository.existsByEmail(request.getEmail()))
             return ResponseEntity.badRequest()
@@ -93,7 +99,7 @@ public class AuthenticationRest {
                                         .orElseThrow(() -> new RuntimeException("Error : role is not found"));
                                 roles.add(roleadmin);
                             case "secretaire":
-                                Role rolesec = roleRepository.findByName(ERole.ROLE_SECRETAIRE)
+                                Role rolesec = roleRepository.findByName(ERole.ROLE_MANAGER)
                                         .orElseThrow(()-> new RuntimeException("Error : role is not found"));
                                 roles.add(rolesec);
                             default:
@@ -109,12 +115,19 @@ public class AuthenticationRest {
 
         }
         user.setStatus(false);
-        user.setRoles(roles); // accorder la liste des Roles
-        userRepository.save(user); // enregistrer dans la base
+        user.setRoles(roles);
+        userRepository.save(user);
+        String adminEmail = "afifimajd383@gmail.com";
+        String subject = "Nouvelle inscription - Activation du compte";
+        String activationLink = "http://localhost:4200/admin/list-users";
+        String message = "Un nouvel utilisateur s'est inscrit.\n\n" +
+                "Nom d'utilisateur: " + user.getUsername() + "\n" +
+                "Email: " + user.getEmail() + "\n\n" +
+                "Veuillez activer ce compte en cliquant sur le lien suivant :\n" +
+                activationLink;
 
+        emailService.sendEmail(adminEmail, subject, message);
         return  ResponseEntity.ok(new MessageResponse("User Registred successfully !!!!"));
-
-
     }
 
     @PostMapping("/signin")
@@ -173,5 +186,7 @@ public class AuthenticationRest {
                         userdetails.getFullname(),
                         roles));
     }
+
+
 }
 

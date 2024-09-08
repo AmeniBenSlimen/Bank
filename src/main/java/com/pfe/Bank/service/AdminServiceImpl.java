@@ -8,18 +8,23 @@ import com.pfe.Bank.model.User;
 import com.pfe.Bank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    private EmailService emailService;
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -109,4 +114,54 @@ public class AdminServiceImpl implements AdminService {
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    @Override
+    public User activateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+
+        if (!user.getStatus()) {
+            user.setStatus(true);
+            userRepository.save(user);
+
+            // Envoyer un e-mail à l'utilisateur pour l'informer que son compte a été activé
+            String subject = "Activation de votre compte";
+            String activationMessage = "Bonjour " + user.getFullname() + ",\n\n"
+                    + "Votre compte a été activé avec succès. Vous pouvez maintenant vous connecter avec vos identifiants.\n\n"
+                    + "Merci d'avoir rejoint notre plateforme.";
+
+            System.out.println("Tentative d'envoi d'email à " + user.getEmail());
+            try {
+                emailService.sendEmail(user.getEmail(), subject, activationMessage);
+                System.out.println("Email envoyé avec succès à " + user.getEmail());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+            return user;
+    }
+
+
+    @Override
+    public User deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id));
+        user.setStatus(false);
+        return userRepository.save(user);
+    }
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            return (User) authentication.getPrincipal();
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
 }

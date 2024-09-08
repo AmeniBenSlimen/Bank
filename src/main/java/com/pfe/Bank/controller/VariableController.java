@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.pfe.Bank.model.Type.ENUMERATION;
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*",allowedHeaders = "*")
@@ -78,6 +80,7 @@ public class VariableController {
         List<Variable> variables = variableService.getAllVariable();
         /*Modele modele = modeleRepository.findByUsedTrue()
                 .orElseThrow(() -> new EntityNotFoundException("No active Modele found"));*/
+        System.out.println(variables.toString());
 
         List<VariableDto> variableDtos = variables.stream().map(variable -> {
             VariableDto variableDto = new VariableDto();
@@ -86,23 +89,29 @@ public class VariableController {
             variableDto.setCoefficient(variable.getCoefficient());
             variableDto.setType(variable.getType());
             variableDto.setDescription(variable.getDescription());
-           // variableDto.setModelId(modele.getId());
+            //variableDto.setModelId(variable.getModele().getId());
 
-            List<ScoreDto> scoreDtos = variable.getScores().stream()
-                    .map(score -> {
-                        ScoreDto scoreDto = new ScoreDto();
-                        scoreDto.setId(score.getId());
-                        scoreDto.setScore(score.getScore());
-                        //scoreDto.setValeur(score.getValeur());
-                        return scoreDto;
-                    }).collect(Collectors.toList());
+            if(ENUMERATION.equals(variable.getType())) {
+                List<ScoreDto> scoreDtos = variable.getScores().stream()
+                        .map(score -> {
+                            com.pfe.Bank.model.ENUMERATION enumeration = (ENUMERATION) score;
+                            ScoreDto scoreDto = new ScoreDto();
+                            scoreDto.setId(score.getId());
+                            scoreDto.setScore(score.getScore());
+                            scoreDto.setValeur(enumeration.getValeur());
+                            return scoreDto;
+                        }).collect(Collectors.toList());
 
-            variableDto.setScores(scoreDtos);
+                variableDto.setScores(scoreDtos);
+            }
+            System.out.println(variable.getScores().toString());
+
             return variableDto;
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(variableDtos);
     }
+
     @GetMapping("/getVariableScoreById/{id}")
     public ResponseEntity<VariableDto> getVariableWithScores(@PathVariable Long id) throws MissingEntity {
         Variable variable = variableService.findById(id);
@@ -116,7 +125,6 @@ public class VariableController {
         variableDto.setType(variable.getType());
         variableDto.setModelId(variable.getModele().getId());
         variableDto.setScores(scoreDtos);
-
         return ResponseEntity.ok(variableDto);
     }
     @PutMapping("/updataVariable/{id}")
@@ -124,6 +132,8 @@ public class VariableController {
         Variable updateVariable = variableService.updateVariable(id, updatedVariable);
         return ResponseEntity.ok(updateVariable);
     }
+
+
     @DeleteMapping("/deleteVariable/{id}")
     public ResponseEntity<Void> deleteVariable(@PathVariable Long id) {
         try {
@@ -137,6 +147,9 @@ public class VariableController {
     public double getPonderationForVariable(@PathVariable Long id) {
         return variableService.calculatePonderationForVariable(id);
     }
-
+    @GetMapping("/VariableModele/{modeleId}")
+    public List<VariableDto> getVariablesByModeleId(@PathVariable Long modeleId) {
+        return variableService.getVariablesByModeleId(modeleId);
+    }
 }
 
