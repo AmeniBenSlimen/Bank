@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -234,6 +235,17 @@ public class VariableServiceImpl implements VariableService{
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Variable> getVariablesByActiveModele() {
+        Optional<Modele> activeModele = modeleRepository.findByUsedTrue();
+
+        if (!activeModele.isPresent()) {
+            throw new EntityNotFoundException("Aucun modèle activé trouvé.");
+        }
+
+        return variableRepository.findByModeleIdAndUsedTrue(activeModele.get().getId());
     }
 
 }

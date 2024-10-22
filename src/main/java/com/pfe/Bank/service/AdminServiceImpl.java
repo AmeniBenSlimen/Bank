@@ -7,10 +7,12 @@ import com.pfe.Bank.model.Role;
 import com.pfe.Bank.model.User;
 import com.pfe.Bank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,7 +31,8 @@ public class AdminServiceImpl implements AdminService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public User getUserById(long id) throws MissingEntity {
         Optional<User> optional = userRepository.findById(id);
@@ -156,12 +159,18 @@ public class AdminServiceImpl implements AdminService {
         }
         return null;
     }
-
-
-
-
-
-
+    public User updateUserProfile(Long userId, User updatedUser) {
+        return userRepository.findById(userId).map(user -> {
+            user.setUsername(updatedUser.getUsername());
+            user.setFullname(updatedUser.getFullname());
+            user.setEmail(updatedUser.getEmail());
+            user.setPhone(updatedUser.getPhone());
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
+            return userRepository.save(user);
+        }).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
 
 
 }

@@ -32,5 +32,5 @@ public interface VariableService {
     void deleteVariable(Long id);
     double calculatePonderationForVariable(Long variableId);
     List<VariableDto> getVariablesByModeleId(Long modeleId);
-
+    public List<Variable> getVariablesByActiveModele();
 }

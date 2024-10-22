@@ -23,9 +23,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SituationClientRetailController {
     @Autowired
-    private  SituationClientService situationService;
+    private SituationClientService situationService;
     @Autowired
-    SituationClientRepository situationRepository;
+    private SituationClientRepository situationRepository;
 
     @PostMapping(value = "/uploadSituation", consumes = {"multipart/form-data"})
     public ResponseEntity<Integer> uploadStuations(

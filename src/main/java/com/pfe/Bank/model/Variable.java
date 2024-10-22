@@ -37,5 +37,13 @@ public class Variable {
 
     @OneToMany(mappedBy = "variable", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Score> scores;
+    private Responses responseMeaning;
 
+    public Responses getResponseMeaning() {
+        return responseMeaning;
+    }
+
+    public void setResponseMeaning(Responses responseMeaning) {
+        this.responseMeaning = responseMeaning;
+    }
 }

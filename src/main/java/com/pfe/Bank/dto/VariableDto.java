@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VariableDto {
+
+
     private long id;
     private String code;
     private String description;
@@ -19,6 +21,16 @@ public class VariableDto {
     private Type type;
     private Long modelId;
     private List<ScoreDto> scores;
+    private Responses responseMeaning;
+    private String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
 
     public static VariableDto of(Variable variable) {
         VariableDto dto = new VariableDto();
@@ -27,7 +39,7 @@ public class VariableDto {
         dto.setDescription(variable.getDescription());
         dto.setCoefficient(variable.getCoefficient());
         dto.setType(variable.getType());
-        dto.setModelId(variable.getModele().getId());
+
         dto.setScores(variable.getScores().stream()
                 .map(score -> {
                     ScoreDto scoreDto = new ScoreDto();
@@ -53,5 +65,70 @@ public class VariableDto {
                 .collect(Collectors.toList()));
 
         return dto;
+    }
+
+    public Responses getResponseMeaning() {
+        return responseMeaning;
+    }
+
+    public void setResponseMeaning(Responses responseMeaning) {
+        this.responseMeaning = responseMeaning;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getCoefficient() {
+        return coefficient;
+    }
+
+    public void setCoefficient(Double coefficient) {
+        this.coefficient = coefficient;
+    }
+
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public Long getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(Long modelId) {
+        this.modelId = modelId;
+    }
+
+    public List<ScoreDto> getScores() {
+        return scores;
+    }
+
+    public void setScores(List<ScoreDto> scores) {
+        this.scores = scores;
     }
 }

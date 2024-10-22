@@ -17,10 +17,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userr = user.findByUsernameAndStatus(username, true) // 'true' pour les utilisateurs actifs
+        User userr = user.findByUsernameAndStatus(username, true)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
-        if (!userr.isStatus()) { // Assure-toi d'appeler isStatus() sur l'objet User
+        if (!userr.isStatus()) {
             throw new UsernameNotFoundException("User is not active.");
         }
 

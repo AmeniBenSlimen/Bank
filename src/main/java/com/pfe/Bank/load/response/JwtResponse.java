@@ -9,22 +9,16 @@ public class JwtResponse {
     private String username;
     private String email;
 
-    private List<String> role;
+    private List<String> roles;
 
-    public JwtResponse(String token, Long id, String username, String email, List<String> role) {
+    public JwtResponse(String token, Long id, String username, String email, List<String> roles) {
         this.token = token;
         this.id = id;
         this.username = username;
         this.email = email;
-        this.role = role;
+        this.roles = roles;
     }
-    public void JwtRespons(String token, Long id, String username, String email,List<String> role) {
-        this.token = token;
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role = role;
-    }
+
 
     public String getToken() {
         return token;
@@ -66,11 +60,11 @@ public class JwtResponse {
         this.email = email;
     }
 
-    public List<String> getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(List<String> role) {
-        this.role = role;
+    public void setRoles(List<String> role) {
+        this.roles = roles;
     }
 }

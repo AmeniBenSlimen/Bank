@@ -118,11 +118,12 @@ public class ModeleController {
             modele.setUsed(!modele.isUsed());
             modele.setLastUsedDate(new Date());
             Modele updatedModele = modeleRepository.save(modele);
-            return ResponseEntity.ok(updatedModele);
+            return ResponseEntity.ok(updatedModele); // Assurez-vous que la réponse contient le modèle mis à jour
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
     @GetMapping("/ponderationModele/{id}")
     public ResponseEntity<?> getModelPonderation(@PathVariable Long id) {
         try {

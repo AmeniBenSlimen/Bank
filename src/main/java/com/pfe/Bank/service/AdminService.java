@@ -28,13 +28,16 @@ public interface AdminService {
 
     Map<String, Boolean> deleteUser(long userId) throws MissingEntity;
 
-    public Optional<User> findByUsername(String username);
 
     User activateUser(Long id);
 
     User deactivateUser(Long id);
 
     public User getCurrentUser();
+    public Optional<User> findByUsername(String username);
+
+
+    public User updateUserProfile(Long userId, User updatedUser);
 
 
 }

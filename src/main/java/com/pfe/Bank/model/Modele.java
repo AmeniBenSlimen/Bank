@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +38,10 @@ public class Modele {
     private Date lastUsedDate;
     private boolean disabled = false;
     private int annee;
+
     @OneToMany(mappedBy = "modele", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Variable> variables;
+    private List<Variable> variables = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         if (!updatebale) {

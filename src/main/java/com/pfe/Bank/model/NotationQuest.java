@@ -6,18 +6,37 @@ public class NotationQuest {
     private long id;
     private ResponseStatus status;
     private double note;
-
+    private long clientId;
+    private String nom;
     public NotationQuest() {
     }
 
-    public NotationQuest(long id, ResponseStatus status, double note, List<ResponseQuest> responses) {
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public NotationQuest(long id, ResponseStatus status, double note, List<ResponseQuest> responses, long clientId, String nom) {
         this.id = id;
         this.status = status;
         this.note = note;
         this.responses = responses;
+        this.clientId = clientId;
+        this.nom = nom;
     }
 
     private List<ResponseQuest> responses;
+
+    public long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(long clientId) {
+        this.clientId = clientId;
+    }
 
     public long getId() {
         return id;

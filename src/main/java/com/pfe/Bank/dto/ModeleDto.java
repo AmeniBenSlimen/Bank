@@ -26,12 +26,18 @@ public class ModeleDto extends ModeleForm {
                 .collect(Collectors.toList()));
         return dto;
     }
+
     public ModeleDto(Modele modele) {
         super(modele);
         this.id = modele.getId();
     }
 
-    public static List<ModeleDto> of(List<Modele> modeles) {
+    /*public static List<ModeleDto> of(List<Modele> modeles) {
         return modeles.stream().map(ModeleDto::of).collect(Collectors.toList());
+    }*/
+    public static List<ModeleDto> of(List<Modele> modeles) {
+        return modeles.stream()
+                .map(ModeleDto::of)
+                .collect(Collectors.toList());
     }
 }

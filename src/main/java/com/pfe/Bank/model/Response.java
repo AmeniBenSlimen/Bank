@@ -13,11 +13,20 @@ public class Response {
     private long id;
     private long variableId;
     private String response;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @JoinColumn(name = "variableId", referencedColumnName = "id", insertable = false, updatable = false)
+    private Variable variable;
 
-    public Response() {
 
+    public Variable getVariable() {
+        return variable;
     }
 
+    public void setVariable(Variable variable) {
+        this.variable = variable;
+    }
+    public Response() {}
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Notation notation;

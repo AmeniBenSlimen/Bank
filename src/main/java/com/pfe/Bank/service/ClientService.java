@@ -4,9 +4,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.pfe.Bank.exception.MissingEntity;
-import com.pfe.Bank.model.Client;
-import com.pfe.Bank.model.ClientRetail;
-import com.pfe.Bank.model.SituationClientRetail;
+import com.pfe.Bank.model.*;
 import com.pfe.Bank.repository.ClientRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -175,5 +173,19 @@ public class ClientService {
     }
     public List<Client> findByCodeRelation(long codeRelation) {
         return clientRepository.findByCodeRelation(codeRelation);
+    }
+
+    public List<Client> getAllClientsWithNotations() {
+        List<Client> clients = clientRepository.findAll();
+
+        // Filtrer les notations avec le statut IN_PROGRESS (0)
+        for (Client client : clients) {
+            List<Notation> filteredNotations = client.getNotations().stream()
+                    .filter(notation -> notation.getStatus() == ResponseStatus.IN_PROGRESS)
+                    .collect(Collectors.toList());
+            client.setNotations(filteredNotations);
+        }
+
+        return clients;
     }
 }

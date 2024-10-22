@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,15 +22,24 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        System.out.println("Chargement des détails de l'utilisateur pour : {}"+ username);
 
-        if (user.getStatus() == false) {
-            throw new DisabledException("User account is disabled");
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    System.out.println("Utilisateur non trouvé avec le nom d'utilisateur : {}"+ username);
+                    return new UsernameNotFoundException("Utilisateur non trouvé");
+                });
+
+        if (!user.getStatus()) {
+            System.out.println("Le compte de l'utilisateur est désactivé pour le nom d'utilisateur : {}"+ username);
+            throw new DisabledException("Le compte de l'utilisateur est désactivé");
         }
 
+        System.out.println("Utilisateur trouvé : {}"+ username);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthorities(user));
     }
+
+
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
         return user.getRoles().stream()

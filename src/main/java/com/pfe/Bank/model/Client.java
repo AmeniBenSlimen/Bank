@@ -43,7 +43,16 @@ public class Client {
     private LocalDateTime dateCreate;
     private  LocalDateTime dateUpdate;
     private boolean isfull;
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    private List<Notation> notations;
 
+    public List<Notation> getNotations() {
+        return notations;
+    }
+
+    public void setNotations(List<Notation> notations) {
+        this.notations = notations;
+    }
 
     public Client(long id, long codeRelation, String idNat, String codeRelationFlexcube, String identifiantProspect, String nom, String profession, String adresse, String agence, String ville, String region, Date dateNaissance, Date dateDebutRelation, String autre, LocalDateTime dateCreate, LocalDateTime dateUpdate, boolean isfull) {
         super();
@@ -64,5 +73,13 @@ public class Client {
         this.dateCreate = dateCreate;
         this.dateUpdate = dateUpdate;
         this.isfull = isfull;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

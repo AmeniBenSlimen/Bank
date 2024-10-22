@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -88,20 +90,65 @@ public class AdminController {
     public ResponseEntity<Map<String, String>> activateUser(@PathVariable Long userId) {
         User user = adminService.activateUser(userId);
 
-        // Envoyer l'email après l'activation
         emailService.sendAccountActivatedEmail(user.getEmail(), user.getUsername());
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "User activated successfully");
         return ResponseEntity.ok(response);
     }
-
-
-
-
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<User> deactivateUser(@PathVariable Long id) {
         User deactivatedUser = adminService.deactivateUser(id);
         return ResponseEntity.ok(deactivatedUser);
     }
+    @PutMapping("/update-profile/{userId}")
+    public ResponseEntity<?> updateUserProfile(@PathVariable Long userId, @RequestBody User user) {
+        try {
+            User updatedUser = adminService.updateUserProfile(userId, user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user profile");
+        }
+    }
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        String currentUsername = authentication.getName();
+
+        Optional<User> optionalUser = adminService.findByUsername(currentUsername);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            UserDto userDto = UserDto.of(user);
+
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateUserProfile(
+            @PathVariable Long id,
+            @RequestBody UserDto userDto,
+            Authentication authentication) {
+
+        String currentUsername = authentication.getName();
+
+        try {
+            User user = adminService.findByUsername(currentUsername).orElseThrow(() -> new MissingEntity("User not found"));
+
+            if (user.getId() == id) {
+                adminService.updateUser(id, userDto);
+                return ResponseEntity.ok("Profile updated successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to update this profile");
+            }
+        } catch (MissingEntity e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
 }
