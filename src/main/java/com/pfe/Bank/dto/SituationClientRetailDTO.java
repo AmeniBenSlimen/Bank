@@ -131,6 +131,19 @@ public class SituationClientRetailDTO {
         this.variableLibre6 = situation.getVariableLibre6();
         this.variableLibre7 = situation.getVariableLibre7();
     }
+
+    public SituationClientRetailDTO(Long id, Long codeRelation, String numeroComptePrincipal,
+                                    double rationEndettement, String classeRisqueLegacy, int scoreClientLegacy) {
+        this.id = id;
+        this.codeRelation = codeRelation;
+        this.numeroComptePrincipal = numeroComptePrincipal;
+        this.rationEndettement = rationEndettement;
+        this.classeRisqueLegacy = classeRisqueLegacy;
+        this.scoreClientLegacy = scoreClientLegacy;
+    }
+    public double calculateTotalDebtRatio() {
+        return (encoursCT + encoursMT + encoursCreditTresorerie) / mntEnConsolidation;
+    }
     public static SituationClientRetailDTO of(SituationClientRetail situationClientRetail){
         return new SituationClientRetailDTO(situationClientRetail);
     }

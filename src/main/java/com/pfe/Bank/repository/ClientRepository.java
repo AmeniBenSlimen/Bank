@@ -15,5 +15,8 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
    /* @Query("SELECT c FROM Client c JOIN c.notations n WHERE n.status = ?0")
     List<Client> findClientsByNotationStatus(String status)*/
 
-
+    @Query("SELECT DISTINCT c FROM Client c JOIN c.notations n")
+    List<Client> findClientsWithNotations();
+    @Query("SELECT c.id, COUNT(n) FROM Client c JOIN c.notations n GROUP BY c.id")
+    List<Object[]> getTotalNotationsForEachClient();
 }

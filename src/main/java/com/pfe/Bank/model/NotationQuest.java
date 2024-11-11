@@ -1,5 +1,6 @@
 package com.pfe.Bank.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class NotationQuest {
@@ -7,8 +8,28 @@ public class NotationQuest {
     private ResponseStatus status;
     private double note;
     private long clientId;
+    private Date createdDate;
     private String nom;
-    public NotationQuest() {
+    private List<ResponseQuest> responses;
+
+    // Le constructeur initialisé
+    public NotationQuest(long id, ResponseStatus status, double note, List<ResponseQuest> responses, long clientId, String nom, Date createdDate) {
+        this.id = id;
+        this.status = status;
+        this.note = note;
+        this.responses = responses;
+        this.clientId = clientId;
+        this.nom = nom;
+        this.createdDate = createdDate;
+    }
+
+    // Getters et Setters
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public String getNom() {
@@ -18,17 +39,6 @@ public class NotationQuest {
     public void setNom(String nom) {
         this.nom = nom;
     }
-
-    public NotationQuest(long id, ResponseStatus status, double note, List<ResponseQuest> responses, long clientId, String nom) {
-        this.id = id;
-        this.status = status;
-        this.note = note;
-        this.responses = responses;
-        this.clientId = clientId;
-        this.nom = nom;
-    }
-
-    private List<ResponseQuest> responses;
 
     public long getClientId() {
         return clientId;

@@ -6,7 +6,9 @@ import com.pfe.Bank.dto.ScoreDto;
 import com.pfe.Bank.dto.VariableDto;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.*;
+import com.pfe.Bank.model.ResponseStatus;
 import com.pfe.Bank.repository.ClientRepository;
+import com.pfe.Bank.repository.NotationRepository;
 import com.pfe.Bank.repository.ScoreVariableRepository;
 import com.pfe.Bank.repository.VariableRepository;
 import com.pfe.Bank.service.CalculScoreService;
@@ -39,6 +41,8 @@ public class ScoreController {
     ClientRepository clientRepository;
     @Autowired
     ClientService clientService;
+    @Autowired
+    NotationRepository notationRepository;
     @PostMapping("/addScore")
     public ResponseEntity<?> addScore(@RequestBody ScoreDto scoreDto) {
         Variable variable = variableRepository.findById(scoreDto.getVariableId())
@@ -194,7 +198,32 @@ public class ScoreController {
     @PostMapping("/finaliseNote/{clientId}")
     public ResponseEntity<Notation> createNotation(@PathVariable long clientId, @RequestBody Notation notation) {
         try {
+            // Vérification s'il existe déjà une notation en cours pour ce client
+            List<Notation> inProgressNotations = notationRepository.findByClientIdAndStatus(clientId, ResponseStatus.IN_PROGRESS);
+
+            // Si une notation IN_PROGRESS existe déjà, ne pas en créer une nouvelle
+            if (!inProgressNotations.isEmpty()) {
+                ErrorResponse errorResponse = new ErrorResponse("Vous devez finaliser votre note en cours avant d'en affecter une nouvelle.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Return the error response separately
+            }
+
+            // Sinon, procéder à la création de la nouvelle notation
             Notation savedNotation = notationService.determineNote(notation, clientId);
+            return ResponseEntity.ok(savedNotation);
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+
+    @PostMapping("/Progress/{clientId}")
+    public ResponseEntity<Notation> Progress(@PathVariable long clientId, @RequestBody Notation notation) {
+        try {
+            Notation savedNotation = notationService.determineNoteProgress(notation, clientId);
             return ResponseEntity.ok(savedNotation);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -265,7 +294,6 @@ public class ScoreController {
 
     @GetMapping("/getNotationById/{id}")
     public ResponseEntity<NotationDto> getNotationById(@PathVariable Long id) {
-        // Log the ID received
         System.out.println("Received request for Notation with ID: " + id);
 
         Notation notation = notationService.getNotationById(id);
@@ -273,7 +301,6 @@ public class ScoreController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        // Créer le NotationDto et mapper les champs
         NotationDto notationDto = new NotationDto();
         notationDto.setId(notation.getId());
         notationDto.setNote(notation.getNote());
@@ -281,8 +308,7 @@ public class ScoreController {
         notationDto.setStatus(notation.getStatus());
         notationDto.setNom((notation.getClient().getNom()));
         notationDto.setCodeRelation(notation.getClient().getCodeRelation());
-
-        // Mapper les réponses et les variables associées
+        notationDto.setCreatedDate(notation.getCreatedDate());
         List<ResponseDto> responseDtos = notation.getResponses().stream()
                 .map(response -> {
                     ResponseDto responseDto = new ResponseDto();
@@ -290,7 +316,6 @@ public class ScoreController {
                     responseDto.setVariableId(response.getVariableId());
                     responseDto.setResponse(response.getResponse());
 
-                    // Ajouter la variable si elle existe
                     if (response.getVariable() != null) {
                         VariableDto variableDto = new VariableDto();
                         variableDto.setId(response.getVariable().getId());
@@ -314,5 +339,17 @@ public class ScoreController {
         }
         return ResponseEntity.ok(clients);
     }
-
+    @GetMapping("/client/{clientId}")
+    public ResponseEntity<List<Notation>> getNotationsByClient(@PathVariable Long clientId) {
+        List<Notation> notations = clientService.getNotationsByClientId(clientId);
+        return ResponseEntity.ok(notations);
+    }
+   /* @GetMapping("/with-notations")
+    public ResponseEntity<List<Client>> getAllClientsNotter() {
+        List<Client> clients = clientService.getAllClientsWithNotations();
+        if (clients.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(clients);
+    }*/
 }

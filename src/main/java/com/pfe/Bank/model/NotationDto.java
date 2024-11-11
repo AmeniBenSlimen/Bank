@@ -4,6 +4,7 @@ import com.pfe.Bank.dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,16 @@ public class NotationDto {
     private long clientId;
     private String nom;
     private long codeRelation;
+    private Date createdDate;
     private List<ResponseDto> responses;
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 
     public String getNom() {
         return nom;

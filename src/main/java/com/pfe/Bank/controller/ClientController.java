@@ -4,13 +4,17 @@ import com.pfe.Bank.dto.SituationClientRetailDTO;
 import com.pfe.Bank.exception.MissingEntity;
 import com.pfe.Bank.model.Client;
 import com.pfe.Bank.model.ClientRetail;
+import com.pfe.Bank.model.Notation;
 import com.pfe.Bank.model.SituationClientRetail;
 import com.pfe.Bank.repository.ClientRepository;
 import com.pfe.Bank.service.ClientService;
+import com.pfe.Bank.service.NotationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +32,8 @@ public class ClientController {
     private ClientService clientService;
     @Autowired
     private ClientRepository clienRepository;
+    @Autowired
+    private NotationService notationService;
     @PostMapping(value = "/uploadClient", consumes = {"multipart/form-data"})
     public ResponseEntity<Integer> uploadClients(
             @RequestPart("file")MultipartFile file) throws IOException {
@@ -64,4 +70,19 @@ public class ClientController {
     public List<Client> getClientsByCodeRelation(@RequestParam long codeRelation) {
         return clientService.findByCodeRelation(codeRelation);
     }
+    @GetMapping("/{clientId}/progress")
+    public String getProgress(@PathVariable Long clientId) {
+        int progress = notationService.getProgressForClient(clientId);
+        if (progress == -1) {
+            return "Aucune notation trouvée pour ce client.";
+        }
+        return "Progression de la demande de crédit : " + progress + "%";
+    }
+    @GetMapping("/total-notations")
+    public List<Object[]> getTotalNotations() {
+        return clientService.getTotalNotationsForEachClient();
+    }
+    // Exemple : récupération de l'utilisateur authentifié
+
+
 }

@@ -34,47 +34,62 @@ public class NotationService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Notation createNotation(Notation notation, long id) {
-        ClientRetail client = (ClientRetail) clientRepository.findById(id)
+    public Notation createNotation(Notation notation, long clientId) {
+        ClientRetail client = (ClientRetail) clientRepository.findById(clientId)
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
-
         List<Response> responses = notation.getResponses();
         notation.setClient(client);
-        notation.setResponses(null);
-
-        // Set status to IN_PROGRESS (0)
+        notation.setResponses(null); // Temporary null to avoid double save
         notation.setStatus(ResponseStatus.IN_PROGRESS);
-
-        // Calculate the total score from all responses
         double totalScore = 0;
         for (Response response : responses) {
-            totalScore += calculateNote(response); // Calculate score for each response
-            response.setNotation(notation); // Set notation for each response
+            Double score = calculateNote(response);
+            if (score == null) {
+                System.out.println("Score is null for response ID: " + response.getId());
+                continue; // Skip null scores
+            }
+            totalScore += score;
+            response.setNotation(notation);
         }
+        System.out.println("Total Score: " + totalScore);
+        notation.setNote(totalScore);
 
-        notation.setNote(totalScore); // Set the total score in the notation
+        // Générer et définir l'appréciation
+        Appreciation appreciation = generateAppreciation(totalScore);
+        notation.setAppreciation(appreciation);
+        System.out.println("Appreciation set: " + notation.getAppreciation()); // Log appreciation
 
         Notation savedNotation = notationRepository.save(notation);
-
-        // Set responses for the saved notation
         for (Response response : responses) {
             response.setNotation(savedNotation);
+            responseRepository.save(response);
         }
-
         if (client.getNotations() == null) {
-            List<Notation> notations = new ArrayList<>();
-            notations.add(savedNotation);
-            client.setNotations(notations);
-        } else {
-            client.getNotations().add(savedNotation);
+            client.setNotations(new ArrayList<>());
         }
-
-        savedNotation.setResponses(responses);
-        notationRepository.save(savedNotation);
+        client.getNotations().add(savedNotation);
         clientRepository.save(client);
 
         return savedNotation;
     }
+
+    public Appreciation generateAppreciation(double note) {
+        if (note >= 0.8) {
+            return Appreciation.TRES_BON;
+        } else if (note >= 0.6) {
+            return Appreciation.BON;
+        } else if (note >= 0.4) {
+            return Appreciation.MOYEN;
+        } else if (note >= 0.2) {
+            return Appreciation.FAIBLE;
+        } else {
+            return Appreciation.TRES_FAIBLE;
+        }
+    }
+
+
+
+
     public Notation finalizeNotation(long notationId) {
         Notation notation = notationRepository.findById(notationId)
                 .orElseThrow(() -> new EntityNotFoundException("Notation not found"));
@@ -187,14 +202,36 @@ public class NotationService {
     public List<NotationQuest> getTerminated() {
         List<Notation> notations = notationRepository.findByStatus(ResponseStatus.DONE);
 
-        return notations.stream().map(notation -> {
-            List<ResponseQuest> responseQuests = notation.getResponses().stream()
-                    .map(response -> new ResponseQuest(response.getId(), response.getVariableId(), response.getResponse(), variableRepository.findById(response.getVariableId()).get().getDescription()))
-                    .toList();
+        // Utiliser un `Map` pour grouper les notations par client
+        return notations.stream()
+                .collect(Collectors.toMap(
+                        notation -> notation.getClient().getId(), // Clé: ID du client
+                        notation -> notation, // Valeur: Notation
+                        (existing, replacement) -> existing // Garde la première occurrence de la notation
+                ))
+                .values().stream()
+                .map(notation -> {
+                    List<ResponseQuest> responseQuests = notation.getResponses().stream()
+                            .map(response -> new ResponseQuest(
+                                    response.getId(),
+                                    response.getVariableId(),
+                                    response.getResponse(),
+                                    variableRepository.findById(response.getVariableId()).get().getDescription()))
+                            .toList();
 
-            return new NotationQuest(notation.getId(), notation.getStatus(), notation.getNote(), responseQuests, notation.getClient().getId(),notation.getClient().getNom());
-        }).toList();
+                    return new NotationQuest(
+                            notation.getId(),
+                            notation.getStatus(),
+                            notation.getNote(),
+                            responseQuests,
+                            notation.getClient().getId(),
+                            notation.getClient().getNom(),
+                            notation.getCreatedDate()
+                    );
+                })
+                .toList();
     }
+
 
     public List<Notation> getInProgress() {
         return notationRepository.findByStatus(ResponseStatus.IN_PROGRESS);
@@ -212,6 +249,11 @@ public class NotationService {
                 .reduce(0.0, Double::sum);
         System.out.println("Note calculée: " + note);
         notation.setNote(note);
+
+        // Générer et définir l'appréciation
+        Appreciation appreciation = generateAppreciation(note);
+        notation.setAppreciation(appreciation);
+        System.out.println("Appréciation générée: " + appreciation); // Log pour vérification
 
         // Liaison de la notation avec le client
         notation.setClient(client);
@@ -234,6 +276,45 @@ public class NotationService {
         // La notation avec les réponses est sauvegardée en cascade
         return notationRepository.save(notation);
     }
+
+    public Notation determineNoteProgress(Notation notation, long id) {
+        ClientRetail client = (ClientRetail) clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Client not found with ID: " + id));
+
+        // Calcul de la note en fonction des réponses
+        Double note = notation.getResponses().stream()
+                .map(this::calculateNote)
+                .reduce(0.0, Double::sum);
+        System.out.println("Note calculée: " + note);
+        notation.setNote(note);
+
+        // Générer et définir l'appréciation
+        Appreciation appreciation = generateAppreciation(note);
+        notation.setAppreciation(appreciation);
+        System.out.println("Appréciation générée: " + appreciation); // Log pour vérification
+
+        // Liaison de la notation avec le client
+        notation.setClient(client);
+
+        // Sauvegarde de la notation et des réponses associées
+        List<Response> responses = notation.getResponses();
+
+        // S'assurer que les réponses sont liées à la notation avant la sauvegarde
+        responses.forEach(response -> response.setNotation(notation));
+
+        // Ajouter la nouvelle notation au client
+        if (client.getNotations() == null) {
+            client.setNotations(new ArrayList<>());
+        }
+        client.getNotations().add(notation);
+
+        // Sauvegarder le client et la notation
+        clientRepository.save(client);
+
+        // La notation avec les réponses est sauvegardée en cascade
+        return notationRepository.save(notation);
+    }
+
 
 
     public Notation determineNotea(Notation notation) {
@@ -264,9 +345,9 @@ public class NotationService {
         return savedNotation;
     }
     private double calculateNote(Response response) {
-        System.out.println("Calculating note for response ID: " + response.getId());
+       /* System.out.println("Calculating note for response ID: " + response.getId());
         System.out.println("Variable ID: " + response.getVariableId());
-        System.out.println("Response Text: " + response.getResponse());
+        System.out.println("Response Text: " + response.getResponse());*/
 
         Variable variable = variableRepository.findById(response.getVariableId())
                 .orElseThrow(() -> new EntityNotFoundException("Variable not found"));
@@ -393,5 +474,12 @@ public class NotationService {
                 .orElse(null);
     }
 
-
+    public int getProgressForClient(Long clientId) {
+        List<Notation> notations = notationRepository.findByClientId(clientId); // Récupère les notations
+        if (notations != null && !notations.isEmpty()) {
+            // Supposons que nous prenons la première notation pour la progression
+            return notations.get(0).getProgressPercentage(); // Appelle la méthode de progression
+        }
+        return -1; // Indique que la notation n'a pas été trouvée
+    }
 }

@@ -43,7 +43,7 @@ public class Client {
     private LocalDateTime dateCreate;
     private  LocalDateTime dateUpdate;
     private boolean isfull;
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private List<Notation> notations;
 
     public List<Notation> getNotations() {
